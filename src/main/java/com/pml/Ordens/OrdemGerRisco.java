@@ -26,6 +26,7 @@ public class OrdemGerRisco extends OrdemOCO{
    
     public OrdemGerRisco(ResumoDia rDia, double gain, double loss) {
         super.gerenciamentoDeRisco = true;
+        super.atualizouReferencia = true;
         super.temTrStop = false;
         super.temAlvo = ConfigOrdens.isTemGerRisco_Saldo() || ConfigOrdens.isTemGerRisco_PtsCont();
         super.gain = gain;
@@ -58,6 +59,7 @@ public class OrdemGerRisco extends OrdemOCO{
             super.ladoOrdem = LadoOrdem.COMPRA;
             super.comprado = true;
             super.linhaCompra = rDia.getPosValMed();
+            
             if(super.temAlvo)
                 super.linhaVenda = new Arredondamento().arredondaCimaMultiplo(rDia.getPosValMed() + super.gain, this);
             if (super.temStop)
@@ -184,6 +186,9 @@ public class OrdemGerRisco extends OrdemOCO{
     public String toString(){
         return super.toString() + " | SaldoDesej = "    + super.saldoDesej
                                 + " | PtsDesejCont = "  + super.ptsContDesej
-                                + " | PrejPerm = "      + super.prejPerm;
+                                + " | PrejPerm = "      + super.prejPerm
+                                + " | Linha Compra = "  + super.linhaCompra
+                                + " | Linha Venda = "   + super.linhaVenda
+                                + " | Linha Stop = "    + super.linhaStop;
     }
 }

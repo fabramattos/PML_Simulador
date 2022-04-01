@@ -274,7 +274,7 @@ public class OrdemOCO extends OrdemSimples{
     boolean testaGain(Candle candle, ResumoDia rDia){
         if (!super.temAlvo)
             return false;
-
+        
         switch(super.ladoOrdem){
             case COMPRA:
                 if(super.linhaVenda > candle.getMaxima())

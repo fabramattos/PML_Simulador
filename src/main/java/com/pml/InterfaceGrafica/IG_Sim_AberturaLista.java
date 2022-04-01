@@ -29,7 +29,7 @@ public class IG_Sim_AberturaLista extends javax.swing.JFrame {
         preparaPlanilha();
         threadTimer = new Thread(() -> {
             while(true){
-                System.out.println("Thread ativo!");
+               // System.out.println("Thread ativo!");
                 try {
                     verificaDados();
                     verificaConfigRelatorios();

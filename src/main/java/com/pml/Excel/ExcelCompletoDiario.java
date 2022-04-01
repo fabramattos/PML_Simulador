@@ -44,7 +44,7 @@ public class ExcelCompletoDiario implements AcoesExcel{
         SXSSFSheet sheet = workbookGravacao.createSheet(nomePlanilha);
         configuraFormatacao(workbookGravacao);
         
-        try(InputStream is = new FileInputStream(ArquivoTemp.getArquivoTemp())){
+        try(InputStream is = new FileInputStream(file)){
             while(is.available() != 0){
                 ObjectInputStream ois = new ObjectInputStream(is);
                 List<Resumos> listaDiario = (List<Resumos>) ois.readObject();

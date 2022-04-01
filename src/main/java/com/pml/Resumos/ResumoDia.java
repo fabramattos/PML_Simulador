@@ -2,10 +2,12 @@ package com.pml.Resumos;
 
 import com.pml.Ordens.Ordem;
 import com.pml.Configuracoes.ConfigOrdens;
+import com.pml.Controladores.ControleOrdens;
 import com.pml.Controladores.ControleTempo;
 import com.pml.Controladores.GerenciamentoDeRisco;
 import com.pml.InterfaceGrafica.IG;
 import com.pml.Ordens.OrdemGerRisco;
+import com.pml.Resumos.ResumoDia.SortDistancia;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,6 +44,7 @@ public class ResumoDia extends Resumos{
         super.media = (super.maxima + super.minima)/2;
         super.podeReposicionarPelaAbertura = false;
         listaOrdensDia.clear();
+        ControleOrdens.ordenouListaDeOrdens = false;
         IG.progressoSimulacaoReseta();
         criaListaOrdensDia();
         ControleTempo.setPodeOperar(false);
@@ -50,7 +53,7 @@ public class ResumoDia extends Resumos{
     
     /**
      * Instancia novo dia e passa os valores do dia anterior
- Reseta a lista de ordens para o dia 'OrdemSimples.listaOrdensDia.clear()'
+     * Reseta a lista de ordens para o dia 'OrdemSimples.listaOrdensDia.clear()'
      * @param proximoCandleDiario lista com os candles diarios
      * @param rDiaEncerrando resumo de como foi o dia anterior
      * @param montaPos se FALSE, reinicia aberturaSerie, valMedio, SaldoSerie, etc
@@ -78,10 +81,13 @@ public class ResumoDia extends Resumos{
                 ControleTempo.setPodeOperar(true);
                 super.atualizouReferencia = rDiaEncerrando.atualizouReferencia;
                 super.aberturaSerie = rDiaEncerrando.aberturaSerie;
-            }else
+            }else{
                 listaOrdensDia.clear();
+                ControleOrdens.ordenouListaDeOrdens = false;
+            }
         }else{
             listaOrdensDia.clear();
+            ControleOrdens.ordenouListaDeOrdens = false;
             criaListaOrdensDia();
         }
         
@@ -145,13 +151,7 @@ public class ResumoDia extends Resumos{
                 valorRealizado*= Math.abs(posAnterior);
                 posValTotal = valor*Math.abs(pos);
             }
-        }
-        if(pos == 0){
-            posValMed = 0;
-            posValTotal = 0;
-        }else
-            posValMed = posValTotal/Math.abs(pos);
-        
+        }  
         atualizaValoresDiarios(valorRealizado);
         ultimoValorExecutado = valor;
     }
@@ -430,7 +430,7 @@ public class ResumoDia extends Resumos{
         listaOrdensDia.addAll(listaTemp);
     }
     
-    private void atualizaOrdemGerRiscoNaListaDoDia(Candle candle, ResumoDia rDia) {
+    private void atualizaOrdemGerRiscoNaListaDoDia(Candle candle) {
         if(!ConfigOrdens.isTemGerRisco_Saldo() && !ConfigOrdens.isTemGerRisco_PtsCont() && !ConfigOrdens.isTemGerRisco_PrejPerm())
             return;
 
@@ -443,16 +443,17 @@ public class ResumoDia extends Resumos{
         }
 
         listaOrdensDia.removeIf(ordem -> ordem.isGerenciamentoDeRisco());
-        OrdemGerRisco ordRisco = new GerenciamentoDeRisco().atualizaOrdemGerRisco(candle, rDia);
+        OrdemGerRisco ordRisco = new GerenciamentoDeRisco().atualizaOrdemGerRisco(candle, this);
         ordRisco.setPodeSair(status);
-        rDia.adicionaOrdemNaLista_PrimeiraPosicao(ordRisco);
+        adicionaOrdemNaLista_PrimeiraPosicao(ordRisco);
     }
 
     public void ordenaListaPelasDistanciaDaAberturaDoCandle(Candle candle) {
-        atualizaOrdemGerRiscoNaListaDoDia(candle, this);
+        atualizaOrdemGerRiscoNaListaDoDia(candle);
         listaOrdensDia.removeIf(ordem -> ordem.isEncerrada());
         listaOrdensDia.forEach(ordem -> ordem.setDistLinhaExecucao(candle));
-        listaOrdensDia.sort(Comparator.comparingDouble(Ordem::getDistAberturaCandle));
+        Collections.sort(listaOrdensDia, new SortDistancia());
+        ControleOrdens.ordenouListaDeOrdens = true;
     }
 
     /**
@@ -471,7 +472,7 @@ public class ResumoDia extends Resumos{
             posValMed = 0;
             posValTotal = 0;
         }else
-            posValMed = posValTotal/Math.abs(pos);
+            posValMed = posValTotal/Math.abs((double)pos);
         
         if(Math.abs(posMax) < Math.abs(pos))
             posMax = pos;
@@ -537,6 +538,21 @@ public class ResumoDia extends Resumos{
         }
     }
     
-    
+    public class SortDistancia implements Comparator<Ordem> {
+
+        @Override
+        public int compare(Ordem ord1, Ordem ord2) {
+           int result = Double.compare(ord1.getDistAberturaCandle(), ord2.getDistAberturaCandle());
+
+           if(ord1.isGerenciamentoDeRisco() && result == 0)
+               return -1;
+
+           if(ord2.isGerenciamentoDeRisco() && result == 0)
+               return 1;
+
+           return result;
+        }
+
+    }
 }
 

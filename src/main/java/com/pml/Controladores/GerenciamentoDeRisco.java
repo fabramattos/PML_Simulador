@@ -25,9 +25,6 @@ public class GerenciamentoDeRisco {
      * @return TRUE se executou a ordem
      */
     public boolean testaSaidas(Candle candle, ResumoDia rDia) {
-        if(rDia.getPos() == 0)
-            return false;
-        
         ControleOrdens controlador = new ControleOrdens();
         GerenciamentoDeRisco.listaValidacoes.forEach(v -> {
             OrdemGerRisco ord = v.atualizaGerRisco(candle, rDia);

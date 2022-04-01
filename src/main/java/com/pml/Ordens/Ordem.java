@@ -13,6 +13,7 @@ import java.util.Objects;
 import com.pml.simulacao.Candle;
 import com.pml.Resumos.Relatorios;
 import com.pml.Resumos.ResumoDia;
+import java.util.Comparator;
 
 public abstract class Ordem implements Comparable<Ordem>, Serializable{
 

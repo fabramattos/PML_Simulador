@@ -6,6 +6,8 @@ import com.pml.Resumos.ResumoDia;
 
 public class ControleOrdens {
 
+    public static boolean ordenouListaDeOrdens = false;
+    
     /**
      * Testa Ordem. Pode ser Simples, OCO ou Ger. Risco
      */
@@ -29,7 +31,8 @@ public class ControleOrdens {
         if(!verificaSeTemOrdemGerRisco(rDia))
             rDia.adicionaOrdemNaLista(new GerenciamentoDeRisco().atualizaOrdemGerRisco(candle, rDia));
         
-        rDia.ordenaListaPelasDistanciaDaAberturaDoCandle(candle);
+        if(!ordenouListaDeOrdens)
+            rDia.ordenaListaPelasDistanciaDaAberturaDoCandle(candle);
         
         while(true){
             boolean executouAlgo = false;

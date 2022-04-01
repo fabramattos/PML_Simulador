@@ -24,7 +24,7 @@ import javax.swing.JFrame;
 public class IG extends javax.swing.JFrame {
     
     private static String nomeSimulacao = "Nome Simulação";
-    private static String versao = "5.0.1";
+    private static String versao = "5.0.3";
 
     
     /**
@@ -739,7 +739,7 @@ public class IG extends javax.swing.JFrame {
     }
     
     private static void abreSimulacaoSelecionada(JComboBox comboBox, String prefixoInterface){
-        String pacote = "InterfaceGrafica.";
+        String pacote = "com.pml.InterfaceGrafica.";
         String nomeSimulacao = comboBox.getSelectedItem().toString().replace(" ", "");
         String nomeClasse = pacote + prefixoInterface + nomeSimulacao;
 

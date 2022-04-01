@@ -555,6 +555,7 @@ public abstract class Resumos implements Serializable{
                 + " | ind = "           + indicadorExtra
                 + " | pos = "           + pos
                 + " | saldo = "         + saldo
+                + " | ValMedPos = "     + posValMed
                 + " | saldoSerie = "    + saldoSerie
                 + " | GR Saldo = "      + gerRisco_Saldo;
     }
