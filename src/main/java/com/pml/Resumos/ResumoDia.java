@@ -43,6 +43,7 @@ public class ResumoDia extends Resumos{
         super.indicadorExtra = candleDiario.getIndicadorExtra();
         super.media = (super.maxima + super.minima)/2;
         super.podeReposicionarPelaAbertura = false;
+        this.ultimoValorExecutado = candleDiario.getAbertura();
         listaOrdensDia.clear();
         ControleOrdens.ordenouListaDeOrdens = false;
         IG.progressoSimulacaoReseta();
@@ -82,10 +83,12 @@ public class ResumoDia extends Resumos{
                 super.atualizouReferencia = rDiaEncerrando.atualizouReferencia;
                 super.aberturaSerie = rDiaEncerrando.aberturaSerie;
             }else{
+                this.ultimoValorExecutado = proximoCandleDiario.getAbertura();
                 listaOrdensDia.clear();
                 ControleOrdens.ordenouListaDeOrdens = false;
             }
         }else{
+            this.ultimoValorExecutado = proximoCandleDiario.getAbertura();
             listaOrdensDia.clear();
             ControleOrdens.ordenouListaDeOrdens = false;
             criaListaOrdensDia();
@@ -451,7 +454,7 @@ public class ResumoDia extends Resumos{
     public void ordenaListaPelasDistanciaDaAberturaDoCandle(Candle candle) {
         atualizaOrdemGerRiscoNaListaDoDia(candle);
         listaOrdensDia.removeIf(ordem -> ordem.isEncerrada());
-        listaOrdensDia.forEach(ordem -> ordem.setDistLinhaExecucao(candle));
+        listaOrdensDia.forEach(ordem -> ordem.setDistLinhaExecucao(candle, this));
         Collections.sort(listaOrdensDia, new SortDistancia());
         ControleOrdens.ordenouListaDeOrdens = true;
     }
@@ -554,5 +557,13 @@ public class ResumoDia extends Resumos{
         }
 
     }
+    
+    public void printListaOrdensParaODia(){
+        int i = 1;
+        for(Ordem ord : listaOrdensDia){
+            System.out.println("pos: " + i++ + " | ord: " + ord);
+        }
+    }
+    
 }
 

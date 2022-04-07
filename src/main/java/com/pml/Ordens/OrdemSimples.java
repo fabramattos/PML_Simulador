@@ -212,20 +212,23 @@ public class OrdemSimples extends Ordem{
 
     
     @Override
-    public void setDistLinhaExecucao(Candle candle) {
+    public void setDistLinhaExecucao(Candle candle, ResumoDia rDia) {
         if(super.iniciada){
-            super.distAberturaCandle = Double.POSITIVE_INFINITY;
+            super.distSaidaDoUltimoValorExec = Double.POSITIVE_INFINITY;
             return; 
         }
+        
         switch (super.ladoOrdem){
             case COMPRA:
-                super.distAberturaCandle = Math.abs(super.linhaCompra - candle.getAbertura());
+                super.distSaidaDoUltimoValorExec = Math.abs(super.linhaCompra - rDia.getUltimoValorExecutado());
                 return;
                 
             case VENDA:
-                super.distAberturaCandle = Math.abs(super.linhaVenda - candle.getAbertura());
+                super.distSaidaDoUltimoValorExec = Math.abs(super.linhaVenda - rDia.getUltimoValorExecutado());
                 return;
         }
     }
+    
+    
     
 }

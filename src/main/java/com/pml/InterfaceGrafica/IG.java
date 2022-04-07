@@ -24,7 +24,7 @@ import javax.swing.JFrame;
 public class IG extends javax.swing.JFrame {
     
     private static String nomeSimulacao = "Nome Simulação";
-    private static String versao = "5.0.3";
+    private static String versao = "5.0.4";
 
     
     /**

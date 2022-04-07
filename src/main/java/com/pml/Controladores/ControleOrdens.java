@@ -42,9 +42,16 @@ public class ControleOrdens {
                     break;
                 }
             }
-            if(executouAlgo)
+            if(executouAlgo){
+                System.out.println("========== LISTA NÃO ORDENADA =========");
+                rDia.printListaOrdensParaODia();
+                
                 rDia.ordenaListaPelasDistanciaDaAberturaDoCandle(candle);
-            else
+                System.out.println("========== LISTA ORDENADA =========");
+                rDia.printListaOrdensParaODia();
+                System.out.println("");
+            
+            }else
                 return;
         }
     }

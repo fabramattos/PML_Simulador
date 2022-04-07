@@ -78,6 +78,8 @@ public class OrdemGerRisco extends OrdemOCO{
                 super.linhaStop = new Arredondamento().arredondaCimaMultiplo(rDia.getPosValMed() + super.loss, this);
         }
         
+        
+        
         rDia.setGerRisco_Saldo(this.saldoDesej);
         rDia.setGerRisco_PrejPerm(this.prejPerm);
     }

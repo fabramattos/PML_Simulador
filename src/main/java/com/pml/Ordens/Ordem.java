@@ -23,7 +23,7 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
     protected int qtde;
     protected double linhaReferencia, linhaCompra, linhaVenda, linhaStop,
                     delta, offset, limOp, gain, loss, trStopPtsAcionamento, trStopGainMin, trStopFrequenciaAtualizacao, linhaTrStop,
-                    prejPerm, ptsContDesej, saldoDesej, distAberturaCandle;
+                    prejPerm, ptsContDesej, saldoDesej, distSaidaDoUltimoValorExec;
                     
     protected boolean stopExecutado, alvoExecutado, trStopExecutado,
                     temDelta, temOffset, temLimOp, temAlvo, temStop, temTrStop, temContMov, 
@@ -73,18 +73,21 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
 
     @Override
     public String toString() {
+        String retorno = "";
         if(data==null)
-            return "ord não iniciada";
-        
-        return  "Data: " + data.getYear() + "/" + data.getMonth() + "/" + data.getDayOfMonth()
-                + " | " + data.getHour() + ":" + data.getMinute()
-                + " | " + nome
-                + " | Comprado = "  + comprado
-                + " | Vendido = "   + vendido
-                + " | LinC = "      + linhaCompra
-                + " | LinV = "      + linhaVenda
-                + " | LinS = "      + linhaStop
-                + " | LinTrS = "    + linhaTrStop;
+            retorno += "Data: null";
+        else
+            retorno += ("Data: " + data.getYear() + "/" + data.getMonth() + "/" + data.getDayOfMonth()
+                        + " | " + data.getHour() + ":" + data.getMinute());
+        retorno +=   (" | " + nome
+                    + " | DistUltimaExec = "  + distSaidaDoUltimoValorExec
+                    + " | Comprado = "  + comprado
+                    + " | Vendido = "   + vendido
+                    + " | LinC = "      + linhaCompra
+                    + " | LinV = "      + linhaVenda
+                    + " | LinS = "      + linhaStop
+                    + " | LinTrS = "    + linhaTrStop);
+        return retorno;
     }
     
     public boolean isTrIniciado() {
@@ -297,7 +300,7 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
     }
 
     public double getDistAberturaCandle() {
-        return distAberturaCandle;
+        return distSaidaDoUltimoValorExec;
     }
     
     /**
@@ -425,7 +428,7 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
      */
     abstract boolean testaSaidas(Candle candle, ResumoDia rDia);
     
-    public abstract void setDistLinhaExecucao(Candle candle); 
+    public abstract void setDistLinhaExecucao(Candle candle, ResumoDia rDia); 
     
     @Override
     public int hashCode() {
@@ -516,4 +519,5 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
         
         return false;
     }
+   
 }

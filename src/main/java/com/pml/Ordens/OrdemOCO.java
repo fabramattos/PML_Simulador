@@ -353,9 +353,9 @@ public class OrdemOCO extends OrdemSimples{
     }
 
     @Override
-    public void setDistLinhaExecucao(Candle candle) {
+    public void setDistLinhaExecucao(Candle candle, ResumoDia rDia) {
         if(!super.iniciada){
-            super.setDistLinhaExecucao(candle);
+            super.setDistLinhaExecucao(candle, rDia);
             return;
         }
         
@@ -367,17 +367,17 @@ public class OrdemOCO extends OrdemSimples{
         
         if(super.temAlvo){
             if(super.ladoOrdem == LadoOrdem.COMPRA)
-                distanciaAlvo = Math.abs(super.linhaVenda - candle.getAbertura());
+                distanciaAlvo = Math.abs(super.linhaVenda - rDia.getUltimoValorExecutado());
             if(super.ladoOrdem == LadoOrdem.VENDA)
-                distanciaAlvo = Math.abs(super.linhaCompra - candle.getAbertura());
+                distanciaAlvo = Math.abs(super.linhaCompra - rDia.getUltimoValorExecutado());
         }
         if(super.temTrStop)
-            distanciaStop = Math.abs(super.linhaTrStop - candle.getAbertura());
+            distanciaStop = Math.abs(super.linhaTrStop - rDia.getUltimoValorExecutado());
                 
         if(super.temStop)
-            distanciaStop = Math.abs(super.linhaStop - candle.getAbertura());
+            distanciaStop = Math.abs(super.linhaStop - rDia.getUltimoValorExecutado());
         
-        super.distAberturaCandle = Double.min(distanciaAlvo, distanciaStop);
+        super.distSaidaDoUltimoValorExec = Double.min(distanciaAlvo, distanciaStop);
         
     }
 
