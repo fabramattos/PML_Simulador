@@ -91,6 +91,11 @@ public class Relatorios{
         relatorioOrdensExecutadas.add(ordClone);
     }
     
+    public static void removeUltimaOrdemExecutada(){
+        System.out.println("ultima ordem: " + relatorioOrdensExecutadas.get(relatorioOrdensExecutadas.size()-1));
+        relatorioOrdensExecutadas.remove(relatorioOrdensExecutadas.size()-1);
+    }
+    
     public static void gravaResumoMensal(Resumos resumo){
         relatorioMensal.add(resumo);
     }

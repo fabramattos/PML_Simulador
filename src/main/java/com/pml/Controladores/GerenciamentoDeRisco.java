@@ -87,26 +87,30 @@ public class GerenciamentoDeRisco {
             ord.setTemOffset(true);
             ord.setData(candle.getData());
             ord.setDataEntrada(candle.getData());
+            ord.setQtde(Math.abs(rDia.getPos()));
+            ord.setOffset(candle.getFechamento() - rDia.getAbertura());
             if (rDia.getPos() > 0) {
                 ord.setLadoOrdem(LadoOrdem.VENDA);
                 ord.setNome("Venda Fech");
+                ord.configuraLinhasEntradaESaidas(rDia.getAbertura());
+                rDia.executaVenda(ord.getQtde(), ord.getLinhaVenda());
             } else {
                 ord.setLadoOrdem(LadoOrdem.COMPRA);
                 ord.setNome("Compra Fech");
+                ord.configuraLinhasEntradaESaidas(rDia.getAbertura());
+                rDia.executaCompra(ord.getQtde(), ord.getLinhaCompra());
             }
-            ord.setQtde(Math.abs(rDia.getPos()));
-            ord.setOffset(candle.getFechamento() - rDia.getAbertura());
-            ord.configuraLinhasEntradaESaidas(rDia.getAbertura());
-            rDia.setGerRisco(false);
-            new ControleOrdens().testaOrdem(candle, rDia, ord);
-            rDia.setGerRisco(statusGerRisco);
+            Relatorios.gravaOrdemExecutada(ord);
             
+            rDia.setDataUltimaOrdemExec(candle.getData());
+            rDia.setGerRisco(statusGerRisco);
             rDia.setSaidas(rDia.getSaidas() - ord.getQtde());
             rDia.setPosValMed(0);
             rDia.setPosValTotal(0);
             
             candle.atualizaCandleResultados(rDia);
             tag = true;
+        
         }
         if (rDia.getQtdeNegociada() != 0) {
             rDia.setSaldoContrato(rDia.getSaldo()/rDia.getQtdeNegociada());

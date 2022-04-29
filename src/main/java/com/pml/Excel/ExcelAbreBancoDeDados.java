@@ -34,6 +34,9 @@ public class ExcelAbreBancoDeDados implements AcoesExcel{
     private String indicador;
     
     private HashSet<Candle> abreBancoDados_Minuto() throws Exception {
+        int linha = 1;
+        String mensagemDeConclusao = "Operação concluída com sucesso\n";
+        
         HashSet<Candle> hashSetLeitura = new HashSet();
         try{
             String origem = escolheOrigem();
@@ -47,6 +50,7 @@ public class ExcelAbreBancoDeDados implements AcoesExcel{
                         .open(is)) {
                 Sheet sheet = workbook.getSheetAt(0);
                 for (Row row : sheet) {
+                    linha++;
                     Candle candle = new Candle();
                     LocalDateTime data;
                     for (Cell cell : row) {
@@ -82,14 +86,14 @@ public class ExcelAbreBancoDeDados implements AcoesExcel{
                     }
                     if(candle.getData()!= null)
                         hashSetLeitura.add(candle);
+                    //System.out.println("linha: " + linha);
                 }
+            }catch(NullPointerException e){
+                mensagemDeConclusao = "\nAVISO! Arquivo excel com problemas!\nAVISO! Leitura da planilha encerrada na linha: " + (linha-1) + "\n\n";
+            }finally {
                 IG.progressoCompletoIndeterminado(false);
-                IG.textoAdd("Operação concluída com sucesso\n") ;
+                IG.textoAdd(mensagemDeConclusao) ;
                 return hashSetLeitura;
-            } catch (FileNotFoundException e) {
-                IG.textoAdd("Arquivo Excel não encontrado!\n");
-            } catch (IOException ex) {
-                IG.textoAdd("erro... ");
             }
         }catch(Exception e){
             IG.textoAdd("Leitura cancelada \n");

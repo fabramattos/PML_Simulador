@@ -15,12 +15,15 @@ import java.util.List;
 import java.util.Objects;
 import com.pml.simulacao.Candle;
 import com.pml.simulacao.Clone;
+import java.time.LocalDateTime;
 
 public class ResumoDia extends Resumos{
     
     private static int ultimaPos;
     private double ultimoValorExecutado;
     private boolean podeOperar_indicadores;
+    private LocalDateTime dataUltimaOrdemExec;
+    private ResumoDia rDiaBackUp;
     
     
     /**
@@ -34,7 +37,6 @@ public class ResumoDia extends Resumos{
      * @param candleDiario lista de candle diario
      */
     public ResumoDia(Candle candleDiario) {
-        super();
         super.data = candleDiario.getData();
         super.abertura = candleDiario.getAbertura();
         super.maxima = candleDiario.getMaxima();
@@ -126,6 +128,7 @@ public class ResumoDia extends Resumos{
      * @param valor 
      */
     public void executaCompra(int qtde, double valor){
+        rDiaBackUp = (ResumoDia) Clone.deepClone(this);
         double valorRealizado = 0;
         int posAnterior = pos;
         
@@ -166,6 +169,8 @@ public class ResumoDia extends Resumos{
      * @param valor
      */
     public void executaVenda(int qtde, double valor){
+        rDiaBackUp = (ResumoDia) Clone.deepClone(this);
+        
         double valorRealizado = 0;
         int posAnterior = pos;
         pos-= qtde;
@@ -205,8 +210,8 @@ public class ResumoDia extends Resumos{
      * @param valor
      */
     public void executaCompraStop(int qtde, double valor){
-        stops+= qtde;
         executaCompra(qtde, valor);
+        stops+= qtde;
     }
     
     /**
@@ -215,8 +220,8 @@ public class ResumoDia extends Resumos{
      * @param valor
      */
     public void executaVendaStop(int qtde, double valor){
-        stops+= qtde;
         executaVenda(qtde, valor);
+        stops+= qtde;
     }
     
     /**
@@ -225,8 +230,8 @@ public class ResumoDia extends Resumos{
      * @param valor
      */
     public void executaCompraTrStop(int qtde, double valor){
-        tStops+= qtde;
         executaCompra(qtde, valor);
+        tStops+= qtde;
     }
     
     /**
@@ -235,8 +240,8 @@ public class ResumoDia extends Resumos{
      * @param valor
      */
     public void executaVendaTrStop(int qtde, double valor){
-        tStops+= qtde;
         executaVenda(qtde, valor);
+        tStops+= qtde;
         
     }
     
@@ -480,7 +485,41 @@ public class ResumoDia extends Resumos{
         if(Math.abs(posMax) < Math.abs(pos))
             posMax = pos;
     }
-
+    
+    /**
+     * restaura os valores diarios para antes da ultima ordem executada e deleta a ultima ordem da lista
+     */
+    public void restauraValoresDiariosAnteriores(){
+        System.out.println("=================== restaurando valores=======================");
+        System.out.println("antes: " + this);
+        this.pos = rDiaBackUp.pos;
+        this.posMax = rDiaBackUp.posMax;
+        this.posValMed = rDiaBackUp.posValMed;
+        this.posValTotal = rDiaBackUp.posValTotal;
+        
+        this.qtdeMax = rDiaBackUp.qtdeMax;
+        this.qtdeNegociada = rDiaBackUp.qtdeNegociada;
+        this.qtdeNegociadaSerie = rDiaBackUp.qtdeNegociadaSerie;
+        
+        this.entradas = rDiaBackUp.entradas;
+        this.saidas = rDiaBackUp.saidas;
+        
+        this.ultimoValorExecutado = rDiaBackUp.ultimoValorExecutado;        
+        
+        this.saldo = rDiaBackUp.saldo;
+        this.saldoSerie = rDiaBackUp.saldoSerie;
+        this.saldoMin = rDiaBackUp.saldoMin;
+        this.saldoAcumulado = rDiaBackUp.saldoAcumulado;
+        this.prejAcum = rDiaBackUp.prejAcum;
+        this.ordemExecutada = rDiaBackUp.ordemExecutada;
+        
+        this.gerRisco = rDiaBackUp.gerRisco;
+        
+        System.out.println("depois: " + this);
+        Relatorios.removeUltimaOrdemExecutada();
+    }
+    
+    
     @Override
     public int hashCode() {
         int hash = 3;
@@ -540,12 +579,20 @@ public class ResumoDia extends Resumos{
             apagaListaOrdensDia();
         }
     }
+
+    public LocalDateTime getDataUltimaOrdemExec() {
+        return dataUltimaOrdemExec;
+    }
+
+    public void setDataUltimaOrdemExec(LocalDateTime dataUltimaOrdemExec) {
+        this.dataUltimaOrdemExec = dataUltimaOrdemExec;
+    }
     
     public class SortDistancia implements Comparator<Ordem> {
 
         @Override
         public int compare(Ordem ord1, Ordem ord2) {
-           int result = Double.compare(ord1.getDistAberturaCandle(), ord2.getDistAberturaCandle());
+           int result = Double.compare(ord1.getDistUltimoValorExecutado(), ord2.getDistUltimoValorExecutado());
 
            if(ord1.isGerenciamentoDeRisco() && result == 0)
                return -1;

@@ -4,6 +4,7 @@
 package com.pml.Ordens;
 
 import com.pml.Configuracoes.ConfigOrdens;
+import com.pml.Resumos.Relatorios;
 import com.pml.simulacao.Arredondamento;
 import com.pml.simulacao.Candle;
 import com.pml.Resumos.ResumoDia;
@@ -41,6 +42,12 @@ public class OrdemOCO extends OrdemSimples{
         if(!super.iniciada)
             return false;
         
+        if(rDia.getDataUltimaOrdemExec() == null)
+            return false;
+            
+        if(this.isGerenciamentoDeRisco() || this.iniciada)
+            this.podeSair = this.podeSair || candle.getData().isAfter(rDia.getDataUltimaOrdemExec());
+
         if(super.podeSair)
             return true;
         
@@ -133,22 +140,10 @@ public class OrdemOCO extends OrdemSimples{
         }
     }
     
-    @Override
-    boolean testaSaidas(Candle candle, ResumoDia rDia) {
-        if(testaStops(candle, rDia)){
-            testaSimultaneidade(candle, rDia);
-            return true;
-        }
-        
-        if(testaGain(candle, rDia))
-            return true;
-        
-        return false;
-    }
-    
     /**
      * @return TRUE se executou o Stop
      */
+    @Override
     boolean testaStop(Candle candle, ResumoDia rDia) {
         if(!super.temStop)
             return false;
@@ -172,25 +167,10 @@ public class OrdemOCO extends OrdemSimples{
     }
     
     /**
-     * @return TRUE se executou algum Stop
-     */
-    boolean testaStops(Candle candle, ResumoDia rDia){
-        boolean executouStop = testaTrailingStop(candle, rDia);
-            
-        if(!executouStop)
-            executouStop = testaStop(candle, rDia);
-        
-        if(!executouStop)
-            return false;
-        
-        return true;
-    }
-
-    /**
-     * 
      * @return TRUE se executou o Trailing Stop
      */
-    private boolean testaTrailingStop(Candle candle, ResumoDia rDia) {
+    @Override
+    boolean testaTrailingStop(Candle candle, ResumoDia rDia) {
         if (!super.temTrStop)
             return false;
         
@@ -219,7 +199,8 @@ public class OrdemOCO extends OrdemSimples{
     /**
      * Verifica se as condições para iniciar o Trailing Stop foram atingidas
      */
-    private boolean trStopTentaIniciar(Candle candle){
+    @Override
+    boolean trStopTentaIniciar(Candle candle){
         if(!super.temTrStop)
             return false;
         
@@ -245,7 +226,8 @@ public class OrdemOCO extends OrdemSimples{
     /**
      * Atualiza a linha de saída pelo Trailing Stop
      */
-    private void trStopAtualiza(Candle candle){
+    @Override
+     void trStopAtualiza(Candle candle){
         if(!super.trIniciado)
             return;
         
@@ -271,13 +253,14 @@ public class OrdemOCO extends OrdemSimples{
     }
     
 
+    @Override
     boolean testaGain(Candle candle, ResumoDia rDia){
         if (!super.temAlvo)
             return false;
         
         switch(super.ladoOrdem){
             case COMPRA:
-                if(super.linhaVenda > candle.getMaxima())
+                if(super.linhaVenda >= candle.getMaxima())
                     return false;
                 
                 super.vendido = true;
@@ -286,7 +269,7 @@ public class OrdemOCO extends OrdemSimples{
                 break;
                 
             case VENDA:
-                if(super.linhaCompra < candle.getMinima())
+                if(super.linhaCompra <= candle.getMinima())
                     return false;
                 
                 super.comprado = true;
@@ -300,58 +283,7 @@ public class OrdemOCO extends OrdemSimples{
         super.alvoExecutado = true;
         return true;
     }
-        
-    /**
-     * Só executado após ter feito Stop ou TrStop. Logo, grava a ordem na lista após a 
-     * verificacao de simultaneidade
-     * @param candle
-     * @param rDia 
-     */
-    private void testaSimultaneidade(Candle candle, ResumoDia rDia) {
-        switch (super.ladoOrdem){
-            case COMPRA:
-                if (candle.getMaxima() >= super.linhaVenda) {
-                    super.simultaneo = true;
-                    rDia.setSimultaneo(rDia.getSimultaneo() + 1);
-                    break;
-                }
-         
-            case VENDA:
-                if (candle.getMinima() <= super.linhaCompra) {
-                    super.simultaneo = true;
-                    rDia.setSimultaneo(rDia.getSimultaneo() + 1);
-                }
-        }
-    }
-
-    public void setGain(double gain) {
-        this.gain = gain;
-    }
-
-    public void setLoss(double loss) {
-        this.loss = loss;
-    }
-
-    public void setTrStopPtsAcionamento(double trStopPtsAcionamento) {
-        this.trStopPtsAcionamento = trStopPtsAcionamento;
-    }
-
-    public void setTrStopGainMin(double trStopGainMin) {
-        this.trStopGainMin = trStopGainMin;
-    }
-
-    public void setTrStopFrequenciaAtualizacao(double trStopFrequenciaAtualizacao) {
-        this.trStopFrequenciaAtualizacao = trStopFrequenciaAtualizacao;
-    }
-
-    public void setTemTrStop(boolean temTrStop) {
-        this.temTrStop = temTrStop;
-    }
-
-    public void setTemAlvo(boolean temAlvo) {
-        this.temAlvo = temAlvo;
-    }
-
+    
     @Override
     public void setDistLinhaExecucao(Candle candle, ResumoDia rDia) {
         if(!super.iniciada){
@@ -379,14 +311,5 @@ public class OrdemOCO extends OrdemSimples{
         
         super.distSaidaDoUltimoValorExec = Double.min(distanciaAlvo, distanciaStop);
         
-    }
-
-    public void setLinhaStop(double linhaStop) {
-        super.linhaStop = linhaStop;
-    }
-
-    public void setReferencia(double valorReferencia) {
-        super.linhaReferencia = valorReferencia;
-        super.atualizouReferencia = true;
     }
 }

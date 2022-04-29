@@ -61,14 +61,14 @@ public class OrdemSimples extends Ordem{
         
         switch (super.ladoOrdem){
             case COMPRA:
-                if (super.linhaCompra > candle.getMaxima() || super.linhaCompra < candle.getMinima())
+                if (super.linhaCompra >= candle.getMaxima() || super.linhaCompra <= candle.getMinima())
                     return false;
                 rDia.executaCompra(super.qtde, super.linhaCompra);
                 super.comprado = true;
                 break;
         
             case VENDA:
-                if (super.linhaVenda > candle.getMaxima() || super.linhaVenda < candle.getMinima())
+                if (super.linhaVenda >= candle.getMaxima() || super.linhaVenda <= candle.getMinima())
                     return false;
                 rDia.executaVenda(super.qtde, super.linhaVenda);
                 super.vendido = true;
@@ -227,6 +227,31 @@ public class OrdemSimples extends Ordem{
                 super.distSaidaDoUltimoValorExec = Math.abs(super.linhaVenda - rDia.getUltimoValorExecutado());
                 return;
         }
+    }
+
+    @Override
+    boolean testaTrailingStop(Candle candle, ResumoDia rDia) {
+        throw new UnsupportedOperationException("Ordem Simples não deveria verificar Trailing Stop");
+    }
+
+    @Override
+    boolean testaStop(Candle candle, ResumoDia rDia) {
+        throw new UnsupportedOperationException("Ordem Simples não deveria verificar Stop");
+    }
+
+    @Override
+    boolean trStopTentaIniciar(Candle candle) {
+        throw new UnsupportedOperationException("Ordem Simples não deveria tentar iniciar TR Stop");
+    }
+
+    @Override
+    void trStopAtualiza(Candle candle) {
+        throw new UnsupportedOperationException("Ordem Simples não deveria atualizar TR Stop");
+    }
+
+    @Override
+    boolean testaGain(Candle candle, ResumoDia rDia) {
+        throw new UnsupportedOperationException("Ordem Simples não deveria testar Gain");
     }
     
     

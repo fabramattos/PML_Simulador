@@ -148,7 +148,7 @@ public class Sim_InverteStop1 extends Simulacao {
                 ord.setLinhaStop(linhaUltimoStopVenda);
             }
             
-            ord.setReferencia(rDia.getAbertura());
+            ord.setLinhaReferencia(rDia.getAbertura());
             controladorOrdens.testaOrdem(Candle.getListaCandleMinuto().get(i+1), rDia, ord);
         }else
             ord = new OrdemOCO();

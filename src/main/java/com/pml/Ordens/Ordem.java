@@ -13,7 +13,6 @@ import java.util.Objects;
 import com.pml.simulacao.Candle;
 import com.pml.Resumos.Relatorios;
 import com.pml.Resumos.ResumoDia;
-import java.util.Comparator;
 
 public abstract class Ordem implements Comparable<Ordem>, Serializable{
 
@@ -136,10 +135,18 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
         this.linhaCompra = linhaCompra;
     }
 
+    public void setLinhaStop(double linhaStop) {
+        this.linhaStop = linhaStop;
+    }
+    
     public double getLinhaVenda() {
         return linhaVenda;
     }
 
+    public void setLinhaReferencia(double linhaReferencia) {
+        this.linhaReferencia = linhaReferencia;
+    }
+    
     public void setLinhaVenda(double linhaVenda) {
         this.linhaVenda = linhaVenda;
     }
@@ -279,14 +286,35 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
     public boolean isVendido() {
         return vendido;
     }
-
-    @Override
-    public int compareTo(Ordem o) {
-        if(this.dataExecucao == null || o.dataExecucao == null)
-            return this.data.compareTo(o.data);
-        return this.dataExecucao.compareTo(o.dataExecucao);
-    }
     
+    public void setGain(double gain) {
+        this.gain = gain;
+    }
+
+    public void setLoss(double loss) {
+        this.loss = loss;
+    }
+
+    public void setTrStopPtsAcionamento(double trStopPtsAcionamento) {
+        this.trStopPtsAcionamento = trStopPtsAcionamento;
+    }
+
+    public void setTrStopGainMin(double trStopGainMin) {
+        this.trStopGainMin = trStopGainMin;
+    }
+
+    public void setTrStopFrequenciaAtualizacao(double trStopFrequenciaAtualizacao) {
+        this.trStopFrequenciaAtualizacao = trStopFrequenciaAtualizacao;
+    }
+
+    public void setTemTrStop(boolean temTrStop) {
+        this.temTrStop = temTrStop;
+    }
+
+    public void setTemAlvo(boolean temAlvo) {
+        this.temAlvo = temAlvo;
+    }
+
     public boolean isPodeSair() {
         return podeSair;
     }
@@ -299,9 +327,17 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
         return trStopFrequenciaAtualizacao;
     }
 
-    public double getDistAberturaCandle() {
+    public double getDistUltimoValorExecutado() {
         return distSaidaDoUltimoValorExec;
     }
+    
+    @Override
+    public int compareTo(Ordem o) {
+        if(this.dataExecucao == null || o.dataExecucao == null)
+            return this.data.compareTo(o.data);
+        return this.dataExecucao.compareTo(o.dataExecucao);
+    }
+    
     
     /**
      * Verifica se a ordem será executada no candle passado como argumento.
@@ -491,14 +527,17 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
      * @return TRUE se executou a ordem
      */
     public boolean verificaExecucaoEntrada(Candle candle, ResumoDia rDia){
-        if(verificaSePodeEntrar(candle, rDia))
-            if(testaEntrada(candle, rDia)){
-                this.data = candle.getData();
-                this.dataExecucao = candle.getData();
-                Relatorios.gravaOrdemExecutada(this);
-                return true;
-            }
-        return false;
+        if(!verificaSePodeEntrar(candle, rDia))
+            return false;
+        
+        if(!testaEntrada(candle, rDia))
+            return false;
+        
+        this.data = candle.getData();
+        this.dataExecucao = candle.getData();
+        rDia.setDataUltimaOrdemExec(candle.getData());
+        Relatorios.gravaOrdemExecutada(this);
+        return true;
     }
 
     
@@ -506,18 +545,141 @@ public abstract class Ordem implements Comparable<Ordem>, Serializable{
      * @return TRUE se executou a ordem
      */
     public boolean verificaExecucaoSaidas(Candle candle, ResumoDia rDia) {
-        if(verificaSePodeSair(candle, rDia))
-            if(testaSaidas(candle, rDia)){
-                this.encerrada = true;
-                this.dataExecucao = candle.getData();
-                Relatorios.gravaOrdemExecutada(this);
-                return true;
+        if(!this.iniciada)
+            return false;
+        
+        //Verificando se alguma outra ordem (entrada) na lista seria executada no mesmo candle.
+        //Caso sim -> força a verificação da ordem atual (saida)
+        //Pode não ser o mais preciso como analisar se poderia sair ou não, ou usar o fechamento como garantia,
+        //mas até o momento é a melhor forma de preservar a logica da operação quando se trabalha com lista de ordens
+        for(Ordem ord : rDia.getListaOrdensDia()){
+            if(ord.testaEntrada_SemExecucao(candle, rDia)){
+                this.podeSair = true;
+                break;
             }
-        // SE CHEGOU NESTE PONTO, NAO PODIA SAIR OU NAO SAIU. CASO NÃO PUDESSE SAIR NO CANDLE, FORÇA A PERMISSAO PRO CANDLE SEGUINTE
-        if(this.iniciada && !this.podeSair)
-            this.podeSair = true;
+        }
+        
+        //TESTA SIMULTANEIDADE E VERIFICASEPODESAIR PODEM PERMUTAR DE LOCAL
+        if(testaSimultaneidade_SemExecucao(candle, rDia)){
+            this.simultaneo = true;
+            rDia.setSimultaneo(rDia.getSimultaneo() + 1);
+            testaStops(candle, rDia);
+            this.encerrada = true;
+            this.dataExecucao = candle.getData();
+            rDia.setDataUltimaOrdemExec(candle.getData());
+            Relatorios.gravaOrdemExecutada(this);
+            return true;
+        }
+        
+        
+        if(!verificaSePodeSair(candle, rDia))
+            return false;
+        
+        
+        if(!testaStops(candle, rDia) && !testaGain(candle, rDia))
+            return false;
+        
+        this.encerrada = true;
+        this.dataExecucao = candle.getData();
+        rDia.setDataUltimaOrdemExec(candle.getData());
+        Relatorios.gravaOrdemExecutada(this);
+        return true;
+    }
+
+    /**
+     * @return TRUE se executou algum Stop
+     */
+    private boolean testaStops(Candle candle, ResumoDia rDia){
+        return (testaTrailingStop(candle, rDia) || testaStop(candle, rDia));
+    }
+    
+    
+    abstract boolean testaTrailingStop(Candle candle, ResumoDia rDia);
+    abstract boolean testaStop(Candle candle, ResumoDia rDia);
+    
+    private boolean testaStops_SemExecucao(Candle candle, ResumoDia rDia){
+        return (testaTrailingStop_SemExecucao(candle, rDia) || testaStop_SemExecucao(candle, rDia));
+    }
+
+    private boolean testaTrailingStop_SemExecucao(Candle candle, ResumoDia rDia) {
+        if (!this.temTrStop)
+            return false;
+        
+        if(trStopTentaIniciar(candle))
+            trStopAtualiza(candle);
+       
+        if(!this.trIniciado)
+            return false;
+        
+        // VERIFICA TRAILING STOP
+        if (rDia.getPos() > 0 && !this.vendido && this.comprado && (candle.getMinima() <= this.linhaTrStop))
+            return true;
+        
+        if (rDia.getPos() < 0 && !this.comprado && this.vendido && (candle.getMaxima() >= this.linhaTrStop))
+            return true;
+
+        return false;
+    }
+    
+     boolean testaStop_SemExecucao(Candle candle, ResumoDia rDia) {
+        if(!this.temStop)
+            return false;
+        
+        //VERIFICAÇÃO STOP
+        if (!this.vendido && this.comprado && (candle.getMinima() <= this.linhaStop))
+            return true;
+        
+        if (!this.comprado && this.vendido && (candle.getMaxima() >= this.linhaStop))
+            return true;
+
+        return false;
+    }
+    
+    /**
+     * Verifica se as condições para iniciar o Trailing Stop foram atingidas
+     */
+    abstract boolean trStopTentaIniciar(Candle candle);
+    
+    /**
+     * Atualiza a linha de saída pelo Trailing Stop
+     */
+    abstract void trStopAtualiza(Candle candle);
+    
+
+    abstract boolean testaGain(Candle candle, ResumoDia rDia);
+    
+    private boolean testaGain_SemExecucao(Candle candle, ResumoDia rDia){
+        if (!this.temAlvo)
+            return false;
+        
+        if(this.comprado && candle.getMaxima() > this.linhaVenda)
+            return true;
+        
+        if(this.vendido && candle.getMinima() < this.linhaCompra)
+            return true;
         
         return false;
     }
-   
+    
+    private boolean testaSimultaneidade_SemExecucao(Candle candle, ResumoDia rDia){
+        return (testaStops_SemExecucao(candle, rDia) && testaGain_SemExecucao(candle, rDia));
+    }
+
+    private boolean testaEntrada_SemExecucao(Candle candle, ResumoDia rDia) {
+        if(!verificaSePodeEntrar(candle, rDia))
+            return false;
+        
+        switch (this.ladoOrdem){
+        
+            case COMPRA:
+                return candle.getMaxima() > this.linhaCompra && this.linhaCompra > candle.getMinima();
+        
+            case VENDA:
+                return candle.getMaxima() > this.linhaVenda && this.linhaVenda > candle.getMinima();
+                
+            default:
+                return false;
+        }
+    }
+    
 }

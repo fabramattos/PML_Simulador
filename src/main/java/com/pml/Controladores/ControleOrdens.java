@@ -1,7 +1,9 @@
 package com.pml.Controladores;
 
+import com.pml.Configuracoes.ConfigOrdens;
 import com.pml.simulacao.Candle;
 import com.pml.Ordens.Ordem;
+import com.pml.Ordens.OrdemGerRisco;
 import com.pml.Resumos.ResumoDia;
 
 public class ControleOrdens {
@@ -45,7 +47,7 @@ public class ControleOrdens {
             if(executouAlgo){
                 System.out.println("========== LISTA NÃO ORDENADA =========");
                 rDia.printListaOrdensParaODia();
-                
+                verificaValoresEComparaComGerRisco(candle, rDia);
                 rDia.ordenaListaPelasDistanciaDaAberturaDoCandle(candle);
                 System.out.println("========== LISTA ORDENADA =========");
                 rDia.printListaOrdensParaODia();
@@ -62,6 +64,37 @@ public class ControleOrdens {
                 return true;
         }
         return false;
+    }
+    
+    /**
+     * se estiver com resultado acima do ger. risco, apaga a ultima ordem executada, restaura dados
+     * e força o ger. risco a ser utilizado
+     */
+    private void verificaValoresEComparaComGerRisco(Candle candle, ResumoDia rDia){
+        boolean flag = false;
+        while(true){
+            if(ConfigOrdens.isTemGerRisco_PtsCont() && ConfigOrdens.isTemGerRisco_Saldo())
+                if(rDia.getSaldoContratoSerie() >= ConfigOrdens.getGerRisco_PtsCont() && rDia.getSaldoSerie() >= ConfigOrdens.getGerRisco_SaldoDesej()){
+                    flag = true;
+                    break;
+                }
+
+            if(ConfigOrdens.isTemGerRisco_PtsCont() && rDia.getSaldoContrato() >= ConfigOrdens.getGerRisco_PtsCont()){
+                flag = true;
+                break;
+            }
+            
+            if(ConfigOrdens.isTemGerRisco_Saldo() && rDia.getSaldo() >= ConfigOrdens.getGerRisco_SaldoDesej())
+                flag = true;
+            break;
+        }
+         
+        if(flag){
+            rDia.restauraValoresDiariosAnteriores();
+            OrdemGerRisco ordRisco= new GerenciamentoDeRisco().atualizaOrdemGerRisco(candle, rDia);
+            ordRisco.setPodeSair(true);
+            testaOrdem(candle, rDia, ordRisco);
+        }
     }
     
 }
