@@ -215,8 +215,11 @@ public class ControleTempo {
      * @param diaD0
      * @return  TRUE se passou dia
      */
-    public boolean verificaPassagemDia(LocalDateTime diadD1, LocalDateTime diaD0) {
-        return (diadD1.getYear() > diaD0.getYear()) || (diadD1.getDayOfYear() > diaD0.getDayOfYear());
+    public boolean verificaSeEhUltimoCandleDoDia(Candle proximo, Candle atual) {
+        if(proximo == null)
+            return true;
+        
+        return (proximo.getData().getYear() > atual.getData().getYear()) || (proximo.getData().getDayOfYear() > atual.getData().getDayOfYear());
     }
 
      /**
@@ -286,10 +289,18 @@ public class ControleTempo {
         return (float) minuto % (float) multiplo == 0;
     }
     
-    public boolean verificaFimDasOperacoes(int i) {
+    public boolean verificaFimDasOperacoesNoDia(int i) {
         return (i == Candle.getListaCandleMinuto().size()-1
             || verificaHorarioFinal(Candle.getListaCandleMinuto().get(i)) 
-            || verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData()));
+            || verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i)));
+    }
+    
+
+    public boolean verificaFimDasOperacoesNoDia(Candle candleMinAtual, Candle candleMinProximo) {
+        if (candleMinProximo == null)
+            return true;
+        
+        return verificaHorarioFinal(candleMinAtual) || verificaSeEhUltimoCandleDoDia(candleMinProximo, candleMinAtual);
     }
     
     

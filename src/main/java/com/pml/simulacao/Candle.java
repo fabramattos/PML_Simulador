@@ -313,7 +313,7 @@ public class Candle implements Comparable<Candle> {
         Candle candleAnterior = new Candle(listaCandleMinuto.get(0));
         Candle candleGravacao = new Candle(listaCandleMinuto.get(0));
         for (Candle candleAtual : listaCandleMinuto) {
-            if (tempo.verificaPassagemDia(candleAtual.getData(), candleAnterior.getData())){
+            if (tempo.verificaSeEhUltimoCandleDoDia(candleAtual, candleAnterior)){
                 candleGravacao.setFechamento(candleAnterior.getFechamento());
                 candleGravacao.setIndicadorExtra(candleAnterior.getIndicadorExtra());
                 candleGravacao.setMedia(candleGravacao.getAbertura(), candleGravacao.getFechamento());

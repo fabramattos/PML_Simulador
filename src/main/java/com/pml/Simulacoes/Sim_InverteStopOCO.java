@@ -34,7 +34,7 @@ public class Sim_InverteStopOCO extends Simulacao {
     public void simula(){
         // VARIAVEIS
         int
-        diaAtual = diaInicial;
+        diaAtual = super.diaAtual;
         
         boolean
         gravouDia = false;
@@ -82,7 +82,7 @@ public class Sim_InverteStopOCO extends Simulacao {
             // VERIFICA SAIDAS FORÇADAS: TEMPO LIMITE, ULTIMO DADO, FECHAMENTO
             if(i == Candle.getListaCandleMinuto().size()-1
             || controleTempo.verificaHorarioFinal(Candle.getListaCandleMinuto().get(i))
-            || controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+            || controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                 if(!gravouDia){
                     gravouDia = true;
 
@@ -95,7 +95,7 @@ public class Sim_InverteStopOCO extends Simulacao {
                 }
                 
                 //FECHAMENTO DO DIA
-                if(controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+               if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                     diaAtual++;
                     rDia = new ResumoDia(Candle.getListaCandleDiario().get(diaAtual), rDia, false);
                     

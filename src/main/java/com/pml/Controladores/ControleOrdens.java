@@ -34,7 +34,7 @@ public class ControleOrdens {
             rDia.adicionaOrdemNaLista(new GerenciamentoDeRisco().atualizaOrdemGerRisco(candle, rDia));
         
         if(!ordenouListaDeOrdens)
-            rDia.ordenaListaPelasDistanciaDaAberturaDoCandle(candle);
+            rDia.ordenaListaPelasDistanciaDaUltimaExecucao(candle);
         
         while(true){
             boolean executouAlgo = false;
@@ -48,7 +48,7 @@ public class ControleOrdens {
                 System.out.println("========== LISTA NÃO ORDENADA =========");
                 rDia.printListaOrdensParaODia();
                 verificaValoresEComparaComGerRisco(candle, rDia);
-                rDia.ordenaListaPelasDistanciaDaAberturaDoCandle(candle);
+                rDia.ordenaListaPelasDistanciaDaUltimaExecucao(candle);
                 System.out.println("========== LISTA ORDENADA =========");
                 rDia.printListaOrdensParaODia();
                 System.out.println("");
@@ -57,7 +57,41 @@ public class ControleOrdens {
                 return;
         }
     }
-
+    
+    
+    public void testaListaOrdens_InverteNaDirecaoDoMovimento(Candle candle, ResumoDia rDia) {
+        new GerenciamentoDeRisco().verificaReposicionaPelaAbertura(rDia, candle);
+        
+        if(!verificaSeTemOrdemGerRisco(rDia))
+            rDia.adicionaOrdemNaLista(new GerenciamentoDeRisco().atualizaOrdemGerRisco(candle, rDia));
+        
+        if(!ordenouListaDeOrdens){
+            rDia.ordenaListaPelasDistanciaDaUltimaExecucao_E_AatualizaParaInversao(candle);
+        }
+       
+        while(true){
+            boolean executouAlgo = false;
+            for(Ordem ordem : rDia.getListaOrdensDia()){
+                if(ordem.verificaExecucao(candle, rDia)){
+                    executouAlgo = true;
+                    break;
+                }
+            }
+            if(executouAlgo){
+                System.out.println("========== LISTA NÃO ORDENADA =========");
+                rDia.printListaOrdensParaODia();
+                verificaValoresEComparaComGerRisco(candle, rDia);
+                rDia.ordenaListaPelasDistanciaDaUltimaExecucao_E_AatualizaParaInversao(candle);
+                System.out.println("========== LISTA ORDENADA =========");
+                rDia.printListaOrdensParaODia();
+                System.out.println("");
+            
+            }else
+                return;
+        }
+    }
+    
+    
     private boolean verificaSeTemOrdemGerRisco(ResumoDia rDia) {
         for(Ordem ordem : rDia.getListaOrdensDia()){
             if(ordem.isGerenciamentoDeRisco())

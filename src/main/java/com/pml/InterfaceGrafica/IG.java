@@ -24,7 +24,7 @@ import javax.swing.JFrame;
 public class IG extends javax.swing.JFrame {
     
     private static String nomeSimulacao = "Nome Simulação";
-    private static String versao = "5.1.0";
+    private static String versao = "5.3.0";
 
     
     /**
@@ -173,7 +173,7 @@ public class IG extends javax.swing.JFrame {
         jPanel4.add(jSimulacoes, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, 270, -1));
 
         jSimulacoesMontaPos.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jSimulacoesMontaPos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Day Trade 1", "Day Trade 2", "Extremos Candle Anterior 1", "Extremos Candle Anterior 2", "Mercado Futuro 1", "Mercado Futuro 2", "Mais Menos OCO Extremos", "Mais Menos OCO Precos" }));
+        jSimulacoesMontaPos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Day Trade 1", "Day Trade 2", "Extremos Candle Anterior 1", "Extremos Candle Anterior 2", "Inverte", "Mercado Futuro 1", "Mercado Futuro 2", "Mais Menos OCO Extremos", "Mais Menos OCO Precos" }));
         jSimulacoesMontaPos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jSimulacoesMontaPosActionPerformed(evt);

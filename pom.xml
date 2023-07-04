@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
-            <version>RELEASE126</version>
+            <version>RELEASE170</version>
         </dependency>
         
         <!-- plugin build fat jar -->

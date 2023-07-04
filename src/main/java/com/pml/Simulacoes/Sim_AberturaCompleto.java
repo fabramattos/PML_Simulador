@@ -47,7 +47,7 @@ public class Sim_AberturaCompleto extends Simulacao {
     @Override
     public void simula(){
         // VARIAVEIS
-        diaAtual = diaInicial;
+        this.diaAtual = super.diaAtual;
         
         rDia = new ResumoDia(Candle.getListaCandleDiario().get(diaAtual));
         ord = new OrdemOCO();
@@ -58,7 +58,7 @@ public class Sim_AberturaCompleto extends Simulacao {
         for(int i = minIni; i<= minFin; i++){
             logicaDaOperacao(i);
                        
-            if(controleTempo.verificaFimDasOperacoes(i)){
+            if(controleTempo.verificaFimDasOperacoesNoDia(i)){
                 gerRisco.encerraDia(Candle.getListaCandleMinuto().get(i), false, rDia);
                 
                 // ULTIMO DADO
@@ -66,7 +66,7 @@ public class Sim_AberturaCompleto extends Simulacao {
                     break;
                 
                 //FECHAMENTO DO DIA
-                if(controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+                if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                     // ULTIMO CANDLE DIA ANALISADO E AINDA TEM DIA PARA SIMULAR
                     if (diaAtual<Candle.getListaCandleDiario().size()){
                         iniciandoNovoDia();

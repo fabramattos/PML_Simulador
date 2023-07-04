@@ -41,8 +41,7 @@ public class Sim_InverteExtremosLocais extends Simulacao {
     @Override
     public void simula(){
         // VARIAVEIS
-        int
-        diaAtual = diaInicial;
+        this.diaAtual = super.diaAtual;
 
         boolean
         gravouDia = false,
@@ -130,7 +129,7 @@ public class Sim_InverteExtremosLocais extends Simulacao {
             // VERIFICA SAIDAS FORÇADAS: TEMPO LIMITE, ULTIMO DADO, FECHAMENTO
             if(i == Candle.getListaCandleMinuto().size()-1
             || controleTempo.verificaHorarioFinal(Candle.getListaCandleMinuto().get(i))
-            || controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+            || controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                 int posAnterior = rDia.getPos();
                 
                 if(!gravouDia){
@@ -144,7 +143,7 @@ public class Sim_InverteExtremosLocais extends Simulacao {
                     break;
 
                 //FECHAMENTO DO DIA
-                if(controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+                if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                     //NÃO EXISTE DADOS SEGUINTE PARA SIMULAÇÃO
                     if (diaAtual == Candle.getListaCandleDiario().size())
                         break;

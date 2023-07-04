@@ -40,7 +40,7 @@ public class Sim_MontaPos_DayTrade2 extends Simulacao {
     @Override
     public void simula(){
         // VARIAVEIS
-        diaAtual = diaInicial;
+        diaAtual = super.diaAtual;
         
         //CONFIGURA ESTRATEGIAS
         ord = new OrdemSimples();
@@ -51,7 +51,7 @@ public class Sim_MontaPos_DayTrade2 extends Simulacao {
             logicaDaOperacao(i);
            
             // VERIFICA SAIDAS FORÇADAS: TEMPO LIMITE, ULTIMO DADO, FECHAMENTO
-            if(controleTempo.verificaFimDasOperacoes(i)){
+            if(controleTempo.verificaFimDasOperacoesNoDia(i)){
                 gerRisco.encerraDia(Candle.getListaCandleMinuto().get(i), false, rDia);
                 
                 // ULTIMO DADO
@@ -59,7 +59,7 @@ public class Sim_MontaPos_DayTrade2 extends Simulacao {
                     break;
                 
                 //FECHAMENTO DO DIA
-                if(controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+               if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                     // ULTIMO CANDLE DIA ANALISADO E AINDA TEM DIA PARA SIMULAR
                     iniciandoNovoDia();
                 }

@@ -235,7 +235,7 @@ public class IG_Sim_AutoGerRiscoInverteReentrada extends javax.swing.JFrame {
 
         jLabel16.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel16.setText("Minutos");
-        getContentPane().add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 90, -1, -1));
+        getContentPane().add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 90, -1, -1));
 
         jMinExtremos.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jMinExtremos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "05", "10", "30", "60" }));

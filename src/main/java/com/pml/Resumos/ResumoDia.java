@@ -6,7 +6,9 @@ import com.pml.Controladores.ControleOrdens;
 import com.pml.Controladores.ControleTempo;
 import com.pml.Controladores.GerenciamentoDeRisco;
 import com.pml.InterfaceGrafica.IG;
+import com.pml.Ordens.LadoOrdem;
 import com.pml.Ordens.OrdemGerRisco;
+import com.pml.Ordens.OrdemSimples;
 import com.pml.Resumos.ResumoDia.SortDistancia;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -456,12 +458,55 @@ public class ResumoDia extends Resumos{
         adicionaOrdemNaLista_PrimeiraPosicao(ordRisco);
     }
 
-    public void ordenaListaPelasDistanciaDaAberturaDoCandle(Candle candle) {
+    public void ordenaListaPelasDistanciaDaUltimaExecucao(Candle candle) {
         atualizaOrdemGerRiscoNaListaDoDia(candle);
         listaOrdensDia.removeIf(ordem -> ordem.isEncerrada());
         listaOrdensDia.forEach(ordem -> ordem.setDistLinhaExecucao(candle, this));
         Collections.sort(listaOrdensDia, new SortDistancia());
         ControleOrdens.ordenouListaDeOrdens = true;
+    }
+    
+    public void ordenaListaPelasDistanciaDaUltimaExecucao_E_AatualizaParaInversao(Candle candle) {
+        atualizaOrdemGerRiscoNaListaDoDia(candle);
+        listaOrdensDia.removeIf(ordem -> ordem.isEncerrada());
+        atualizaQuantidadeParaInversaoAFavorDoMovimento(candle);
+        
+        listaOrdensDia.forEach(ordem -> ordem.setDistLinhaExecucao(candle, this));
+        Collections.sort(listaOrdensDia, new SortDistancia());
+        ControleOrdens.ordenouListaDeOrdens = true;
+    }
+    
+    private void atualizaQuantidadeParaInversaoAFavorDoMovimento(Candle candle) {
+        if(pos == 0)
+            return;
+        
+        atualizaOrdemGerRiscoNaListaDoDia(candle);
+        
+        List<Ordem> listaLadoOposto = new ArrayList<>();
+        OrdemSimples ord;
+        if(pos>0){
+            listaLadoOposto.addAll(listaOrdensDia.stream()
+                        .filter(ordem -> ordem.getLadoOrdem().equals(LadoOrdem.VENDA))
+                        .toList());
+        }
+        
+        if(pos<0){
+            listaLadoOposto.addAll(listaOrdensDia.stream()
+                        .filter(ordem -> ordem.getLadoOrdem().equals(LadoOrdem.COMPRA))
+                        .toList());
+        }
+        
+        if(listaLadoOposto.isEmpty())
+            return;
+        
+        listaLadoOposto.sort(Comparator.comparing(ordem -> ordem.getDistUltimoValorExecutado()));
+        ord = (OrdemSimples) listaLadoOposto.get(0);
+        
+//        listaOrdensDia.remove(ord);
+        
+        ord.setQtde(Math.abs(pos) + (int) ConfigOrdens.getLoss());
+//        listaOrdensDia.add(ord);
+    
     }
 
     /**
@@ -600,6 +645,19 @@ public class ResumoDia extends Resumos{
            if(ord2.isGerenciamentoDeRisco() && result == 0)
                return 1;
 
+           if (result == 0){
+               if(pos >= 0) {
+                    if(ord1.getLadoOrdem() == LadoOrdem.COMPRA)
+                        return -1;
+                    if(ord1.getLadoOrdem() == LadoOrdem.VENDA)
+                        return 1;
+                }else{
+                   if(ord1.getLadoOrdem() == LadoOrdem.COMPRA)
+                        return 1;
+                    if(ord1.getLadoOrdem() == LadoOrdem.VENDA)
+                        return -1;
+               }
+           }
            return result;
         }
 

@@ -34,7 +34,7 @@ public class Sim_MontaPos_MercFut2 extends Simulacao {
     public void simula(){
         // VARIAVEIS
         int
-        diaAtual = diaInicial,
+        diaAtual = super.diaAtual,
         posAnterior = 0;
         
         boolean
@@ -115,7 +115,7 @@ public class Sim_MontaPos_MercFut2 extends Simulacao {
                 // VERIFICA SAIDAS FORÇADAS: TEMPO LIMITE, ULTIMO DADO, FECHAMENTO
                 if(i == Candle.getListaCandleMinuto().size()-1
                 || controleTempo.verificaHorarioFinal(Candle.getListaCandleMinuto().get(i))
-                || controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+                || controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                     if(!gravouDia){
                         gravouDia = true;
                         
@@ -131,7 +131,7 @@ public class Sim_MontaPos_MercFut2 extends Simulacao {
                         break;
 
                     //FECHAMENTO DO DIA
-                    if(controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+                    if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                         //NÃO EXISTE DADOS SEGUINTE PARA SIMULAÇÃO
                         if (diaAtual == Candle.getListaCandleDiario().size())
                             break;

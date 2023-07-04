@@ -37,7 +37,7 @@ public class Sim_AutoGerRiscoInverteReentrada extends Simulacao {
     public void simula(){
         // VARIAVEIS
         int
-        diaAtual = diaInicial,
+        diaAtual = super.diaAtual,
 
         //PARA CONTROLAR QUAL ESTADO ESTÁ, E CONFIGURAR O GER. RISCO. 
         //[AUTO, GER.RISCO.ORIGINAL, 5, 2]
@@ -243,7 +243,7 @@ public class Sim_AutoGerRiscoInverteReentrada extends Simulacao {
             // VERIFICA SAIDAS FORÇADAS: TEMPO LIMITE, ULTIMO DADO, FECHAMENTO
             if(i == Candle.getListaCandleMinuto().size()-1
             || controleTempo.verificaHorarioFinal(Candle.getListaCandleMinuto().get(i))
-            || controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+            || controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                 if(!gravouDia){
                     gravouDia = true;
                     diaOperando = false;
@@ -256,7 +256,7 @@ public class Sim_AutoGerRiscoInverteReentrada extends Simulacao {
                     break;
                 
                 //FECHAMENTO DO DIA
-                if(controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+                if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                     // ULTIMO CANDLE DIA ANALISADO E AINDA TEM DIA PARA SIMULAR
                     if (diaAtual<Candle.getListaCandleDiario().size()){
                         diaAtual++;

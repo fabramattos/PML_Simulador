@@ -34,7 +34,7 @@ public class Sim_PrimeiroOffsetComInverte extends Simulacao {
     
     @Override
     public void simula(){
-        diaAtual = diaInicial;
+        diaAtual = super.diaAtual;
         ord = new OrdemOCO();
         rDia = new ResumoDia(Candle.getListaCandleDiario().get(diaAtual));
         diaOperando = verificadorIndicadores.verificaIndicadores(diaAtual, rDia);
@@ -47,7 +47,7 @@ public class Sim_PrimeiroOffsetComInverte extends Simulacao {
             logicaDaOperacao(i);
             
             // VERIFICA SAIDAS FORÇADAS: TEMPO LIMITE, ULTIMO DADO, FECHAMENTO
-            if(controleTempo.verificaFimDasOperacoes(i)){
+            if(controleTempo.verificaFimDasOperacoesNoDia(i)){
                 gerRisco.encerraDia(Candle.getListaCandleMinuto().get(i), false, rDia);
                 
                 // ULTIMO DADO
@@ -55,7 +55,7 @@ public class Sim_PrimeiroOffsetComInverte extends Simulacao {
                     break;
                 
                 //FECHAMENTO DO DIA
-                if(controleTempo.verificaPassagemDia(Candle.getListaCandleMinuto().get(i+1).getData(), Candle.getListaCandleMinuto().get(i).getData())){
+               if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
                     // ULTIMO CANDLE DIA ANALISADO E AINDA TEM DIA PARA SIMULAR
                     if (diaAtual<Candle.getListaCandleDiario().size())
                         iniciandoNovoDia(i);
