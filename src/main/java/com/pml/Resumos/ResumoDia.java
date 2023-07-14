@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import com.pml.simulacao.Candle;
-import com.pml.simulacao.Clone;
+import com.pml.infra.Candle;
+import com.pml.infra.Clone;
 import java.time.LocalDateTime;
 
 public class ResumoDia extends Resumos{
@@ -61,7 +61,8 @@ public class ResumoDia extends Resumos{
      * Reseta a lista de ordens para o dia 'OrdemSimples.listaOrdensDia.clear()'
      * @param proximoCandleDiario lista com os candles diarios
      * @param rDiaEncerrando resumo de como foi o dia anterior
-     * @param montaPos se FALSE, reinicia aberturaSerie, valMedio, SaldoSerie, etc
+     * @param montaPos se FALSE, reinicia aberturaSerie, valMedio, SaldoSerie, etc. Referencias para ordens
+     * futuras em uma série ainda não finalizada
      */
     public ResumoDia(Candle proximoCandleDiario, ResumoDia rDiaEncerrando, boolean montaPos) {
         super();
@@ -412,7 +413,7 @@ public class ResumoDia extends Resumos{
         super.saldoContratoSerie = rDiaEncerrando.saldoContratoSerie;
 
         // SE NÃO EXECUTOU ORDENS NO DIA, NÃO TEM QUE O ALTERAR/GRAVAR
-        if(!rDiaEncerrando.isOrdemExecutada())
+        if(!rDiaEncerrando.executouAlgumaOrdem())
             return;
         
         //CALCULANDO

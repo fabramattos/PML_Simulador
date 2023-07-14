@@ -10,7 +10,7 @@ import com.pml.Controladores.ControleTempo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 import com.pml.Resumos.Relatorios;
 import com.pml.Resumos.ResumoDia;
 

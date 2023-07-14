@@ -1,7 +1,7 @@
 package com.pml.Controladores;
 
 import com.pml.Configuracoes.ConfigOrdens;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 import com.pml.Ordens.Ordem;
 import com.pml.Ordens.OrdemGerRisco;
 import com.pml.Resumos.ResumoDia;

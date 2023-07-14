@@ -10,10 +10,10 @@ import com.pml.Indicadores.diario.AcoesIndicadores;
  */
 public class IndicadoresHandler{
     
-    private static List<AcoesIndicadores> listaValidacoesDiario;
+    private static List<AcoesIndicadores> listaValidacoesIndicadores;
 
-    public IndicadoresHandler(List<AcoesIndicadores> listaValidacoesDiario, List<AcoesIndicadores> listaValidacoesMinuto) {
-        IndicadoresHandler.listaValidacoesDiario = listaValidacoesDiario;
+    public IndicadoresHandler(List<AcoesIndicadores> listaValidacoes) {
+        IndicadoresHandler.listaValidacoesIndicadores = listaValidacoes;
     }
     
     /**
@@ -24,7 +24,7 @@ public class IndicadoresHandler{
      */
     public boolean verificaIndicadores(int dia, ResumoDia rDia) {
         rDia.setPodeOperarNoDia(true);
-        IndicadoresHandler.listaValidacoesDiario.forEach(v -> {
+        IndicadoresHandler.listaValidacoesIndicadores.forEach(v -> {
             
             try{
                 if(!v.verificaIndicador(dia))

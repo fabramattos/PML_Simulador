@@ -18,9 +18,6 @@ public class IG_GerRisco extends javax.swing.JFrame {
     private static boolean podeSimular = false;
     private static boolean relatorioCompleto = false;
     
-    /**
-     * Creates new form IG_Indicadores
-     */
     public IG_GerRisco() {
         initComponents();
         verificaInterface();

@@ -3,7 +3,7 @@ import com.pml.Configuracoes.ConfigOrdens;
 import com.pml.GerenciamentoDeRisco.ValidacaoGerRisco;
 import com.pml.Ordens.LadoOrdem;
 import com.pml.Ordens.OrdemGerRisco;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 import com.pml.Ordens.OrdemSimples;
 import java.util.List;
 import com.pml.Resumos.Relatorios;
@@ -65,12 +65,12 @@ public class GerenciamentoDeRisco {
         if(rDia.isGravado())
             return false;
         
-        if (rDia.isOrdemExecutada())
+        if (rDia.executouAlgumaOrdem())
             ResumoDia.setUltimaPos(rDia.getPos());
        
         boolean tag = false;
         
-        if (!rDia.isOrdemExecutada()) {
+        if (!rDia.executouAlgumaOrdem()) {
             OrdemSimples ord = new OrdemSimples();
             ord.setData(candle.getData());
             ord.setNome("");

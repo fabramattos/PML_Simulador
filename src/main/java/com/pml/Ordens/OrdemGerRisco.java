@@ -6,8 +6,8 @@
 package com.pml.Ordens;
 
 import com.pml.Configuracoes.ConfigOrdens;
-import com.pml.simulacao.Arredondamento;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Arredondamento;
+import com.pml.infra.Candle;
 import com.pml.Resumos.ResumoDia;
 
 public class OrdemGerRisco extends OrdemOCO{

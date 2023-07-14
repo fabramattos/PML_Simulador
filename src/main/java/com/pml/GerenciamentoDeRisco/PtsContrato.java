@@ -7,7 +7,7 @@ package com.pml.GerenciamentoDeRisco;
 
 import com.pml.Configuracoes.ConfigOrdens;
 import com.pml.Ordens.OrdemGerRisco;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 import com.pml.Resumos.ResumoDia;
 
 /**
