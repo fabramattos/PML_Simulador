@@ -2,7 +2,7 @@
  * Esta classe converte os valores de ticks para pontos ou centavos,
  * dependendo do ativo
  **/
-package com.pml.simulacao;
+package com.pml.infra;
 
 public class ConverteAtivos {
     

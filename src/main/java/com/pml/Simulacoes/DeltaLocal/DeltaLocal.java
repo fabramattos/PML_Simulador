@@ -1,182 +1,138 @@
-/**
- *  DAY TRADE
- *  • Parâmetros: Qtde, Delta, Qtde Max, G, L
- *  • Lógica da montagem da pos:
- *      o Uma única ordem ativa por vez
- *      o Espera uma diferença (delta) mínima entre um máximo local e um mínimo local.
- *        Entra a favor do movimento após a inversão.
- *        Ex. 4000 → 3995 (delta = 5, permite entrar em 4000 agora) → retorna a 4000 → entrada em 4000
- *      o Só entra novamente se não tiver atingido Pts/Contrato ou PrejMax
- *      o Ao sair, reseta máximo e mínimo local
- *  • Lógica da saída da pos:
- *      o Day Trade
- *      o Pelos parâmetros da ordem
- **/
-
-package com.pml.Simulacoes;
+package com.pml.Simulacoes.DeltaLocal;
 
 import com.pml.Configuracoes.ConfigBase;
 import com.pml.Configuracoes.ConfigOrdens;
 import com.pml.Ordens.LadoOrdem;
 import com.pml.Ordens.Ordem;
 import java.util.ArrayList;
-import com.pml.simulacao.Candle;
 import com.pml.Ordens.OrdemOCO;
-import com.pml.Resumos.ResumoDia;
+import com.pml.Simulacoes.SimulacaoBase;
 
-public class Sim_DeltaLocal extends Simulacao {
+public class DeltaLocal extends SimulacaoBase {
     
-    public Sim_DeltaLocal(boolean aplicado) {
-        super(aplicado);
+    public DeltaLocal() {
+        super(false, false);
     }
     
-    @Override
-    public void simula(){
-        // VARIAVEIS
-        int
-        diaAtual = super.diaAtual;
-        
-        boolean 
-        diaGravado = false,
+    private boolean 
         deltaMax = false,
-        deltaMin = false,
-        ultimoCandle = true;
+        deltaMin = false;
         
-        double
+    private double 
         offsetMax = 0,
         offsetMin = 0,
-        maxLocal = -1*Float.MAX_VALUE,
-        minLocal = Float.MAX_VALUE;
+        maxLocal = Float.NEGATIVE_INFINITY,
+        minLocal = Float.POSITIVE_INFINITY;
         
-        ArrayList listaPrecos = new ArrayList();
-        
-        //INICIA NOVO DIA
-        ResumoDia rDia = new ResumoDia(Candle.getListaCandleDiario().get(diaAtual));
-
-        // CONFIGURA ESTRATEGIA
-        Ordem ord = new OrdemOCO();
-        ord.configuraLinhasEntradaESaidas(rDia.getAbertura());
-        rDia.adicionaOrdemNaLista(ord);
-        
-        boolean diaOperando = verificadorIndicadores.verificaIndicadores(diaAtual, rDia);
-        for(int i = minIni; i<= minFin; i++){
-            if(diaOperando && !rDia.isGerRisco() && controleTempo.verificaHorarioInicial(Candle.getListaCandleMinuto().get(i))){
-                //SE SAIU, COLOCA NOVAS ORDENS
-                if(!rDia.getListaOrdensDia().isEmpty()
-                && (rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isAlvoExecutado()
-                    || rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isStopExecutado()
-                    || rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isTrStopExecutado())){
-                    maxLocal = -1*Float.MAX_VALUE;
-                    minLocal = Float.MAX_VALUE;
-                    offsetMax = 0;
-                    offsetMin = 0;
-                    deltaMin = false;
-                    deltaMax = false;
-                    ord = new OrdemOCO();
-                    ord.configuraLinhasEntradaESaidas(rDia.getAbertura());
-                    rDia.adicionaOrdemNaLista(ord);
-                }
-
-
-                //VERIFICA DELTA PARA ENTRADA NA ALTA
-                if(!deltaMax
-                && !listaPrecos.contains(maxLocal + ConfigBase.getPassoMin())
-                && Candle.getListaCandleMinuto().get(i).getMinima() - maxLocal <= -1*Math.abs(ConfigOrdens.getDeltaIni())){
-                    deltaMax = true; //ENTRADA ACIMA
-                    listaPrecos.add(maxLocal + ConfigBase.getPassoMin());
-                    offsetMax = maxLocal + ConfigBase.getPassoMin() - ord.getLinhaReferencia();
-//                        System.out.println(Candle.getListaCandleMinuto().get(i).printData()
-//                                + " | MaxLocal: " + maxLocal + " | offset: " + offsetMax);
-                }
-                //VERIFICA DELTA PARA ENTRADA NA BAIXA
-                if(!deltaMin
-                && !listaPrecos.contains(minLocal - ConfigBase.getPassoMin())
-                && Candle.getListaCandleMinuto().get(i).getMaxima() - minLocal >= Math.abs(ConfigOrdens.getDeltaIni())){
-                    deltaMin = true; //ENTRADA ABAIXO
-                    listaPrecos.add(minLocal - ConfigBase.getPassoMin());
-                    offsetMin = minLocal - ConfigBase.getPassoMin() - ord.getLinhaReferencia();
-//                        System.out.println(Candle.getListaCandleMinuto().get(i).printData()
-//                                + " | MinLocal: " + minLocal + " | offset: " + offsetMin);
-                }
-
-                //ENTRADA COM COTAÇÃO SUBINDO
-                if(deltaMax 
-                && !rDia.getListaOrdensDia().isEmpty()
-                && !rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isIniciada()){
-                    rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setOffset(offsetMax);
-                    if(!rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isTemContMov())
-                        rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.COMPRA);
-                    else 
-                        rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.VENDA);
-                }
-
-                controladorOrdens.testaListaOrdens(Candle.getListaCandleMinuto().get(i), rDia);
-
-                //ENTRADA COM COTAÇÃO DESCENDO
-                if(deltaMin
-                && !rDia.getListaOrdensDia().isEmpty()
-                && !rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isIniciada()){
-                    rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setOffset(offsetMin);
-                    if(!rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isTemContMov())
-                        rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.VENDA);
-                    else 
-                        rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.COMPRA);
-                }
-
-                controladorOrdens.testaListaOrdens(Candle.getListaCandleMinuto().get(i), rDia);
-                rDia.atualizaDia(Candle.getListaCandleMinuto().get(i));
-
-            }//FIM DA VERIFICAÇÃO HORARIO INICIAL
-            
-            Candle.getListaCandleMinuto().get(i).registraResultados(rDia, false);
-            
-            // VERIFICA SAIDAS FORÇADAS: TEMPO LIMITE, ULTIMO DADO, FECHAMENTO
-            if(i == Candle.getListaCandleMinuto().size()-1
-            || controleTempo.verificaHorarioFinal(Candle.getListaCandleMinuto().get(i)) 
-            || controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
-                if(!diaGravado){
-                    diaGravado = true;
-                    gerRisco.encerraDia(Candle.getListaCandleMinuto().get(i), false, rDia);
-                }
-                
-                // ULTIMO DADO
-                if(i == Candle.getListaCandleMinuto().size()-1)
-                    break;
-                
-                //FECHAMENTO DO DIA
-               if(controleTempo.verificaSeEhUltimoCandleDoDia(Candle.getListaCandleMinuto().get(i+1), Candle.getListaCandleMinuto().get(i))){
-                    // ULTIMO CANDLE DIA ANALISADO E AINDA TEM DIA PARA SIMULAR
-                    if (diaAtual<Candle.getListaCandleDiario().size()){
-                        diaAtual++;
-                        rDia = new ResumoDia(Candle.getListaCandleDiario().get(diaAtual), rDia, false);
-                        
-                        ord = new OrdemOCO();
-                        ord.configuraLinhasEntradaESaidas(Candle.getListaCandleDiario().get(diaAtual).getAbertura());
-                        rDia.adicionaOrdemNaLista(ord);
-                        
-                        diaOperando = verificadorIndicadores.verificaIndicadores(diaAtual, rDia);
-                        diaGravado = false;
-                        maxLocal = -1*Float.MAX_VALUE;
-                        minLocal = Float.MAX_VALUE;
-                        offsetMax = 0;
-                        offsetMin = 0;
-                        deltaMin = false;
-                        deltaMax = false;
-                        ultimoCandle = true;
-                        
-                        listaPrecos.clear();
-                    }   
-                }
-            } // FIM DO BLOCO FIM OPERACAO DIA
-            
-            //CORREÇÃO PARA O INICIO DO DIA SEGUINTE.
-            if(!ultimoCandle){
-                maxLocal = Double.max(maxLocal, Candle.getListaCandleMinuto().get(i).getMaxima());
-                minLocal = Double.min(minLocal, Candle.getListaCandleMinuto().get(i).getMinima());
-            }else{
-                ultimoCandle = false;
-            }
-            
-        } //FIM SIMULAÇÃO
+        private Ordem ord;
+        private ArrayList listaPrecos = new ArrayList();
+    
+    @Override
+    protected void logicaDaOperacao() {
+        verificaSeSaiu_ColocaNovasOdens();
+        atualizaExtremosLocais();
+        verificaDeltas();
+        verificaEntradaESaida();
     }
+
+    @Override
+    protected void primeiroCandleValidoDoDia() {
+        ord = new OrdemOCO();
+        ord.configuraLinhasEntradaESaidas(candleDiaAtual.getAbertura());
+        rDia.adicionaOrdemNaLista(ord);
+
+        maxLocal = Float.NEGATIVE_INFINITY;
+        minLocal = Float.POSITIVE_INFINITY;
+        
+        offsetMax = 0;
+        offsetMin = 0;
+        deltaMin = false;
+        deltaMax = false;
+
+        listaPrecos.clear();
+    }
+
+    private void atualizaExtremosLocais(){
+        maxLocal = Double.max(maxLocal, candleMinAtual.getMaxima());
+        minLocal = Double.min(minLocal, candleMinAtual.getMinima());
+    }
+    
+     private void verificaDeltas() {
+        verificaDeltaParaEntrarNaAlta();
+        verificaDeltaParaEntarNaBaixa();
+    }
+
+    private void verificaEntradaESaida() {
+        verificaEntradaComCotacaoSubindo();
+        verificaEntradaComCotacaoDescendo();
+    }
+    
+    private void verificaDeltaParaEntrarNaAlta(){
+        //VERIFICA DELTA PARA ENTRADA NA ALTA
+        if(!deltaMax
+        && !listaPrecos.contains(maxLocal + ConfigBase.getPassoMin())
+        && candleMinAtual.getMinima() - maxLocal <= -1*Math.abs(ConfigOrdens.getDeltaIni())){
+            deltaMax = true; //ENTRADA ACIMA
+            listaPrecos.add(maxLocal + ConfigBase.getPassoMin());
+            offsetMax = maxLocal + ConfigBase.getPassoMin() - ord.getLinhaReferencia();
+        }
+    }
+    
+    private void verificaDeltaParaEntarNaBaixa(){
+        //VERIFICA DELTA PARA ENTRADA NA BAIXA
+        if(!deltaMin
+        && !listaPrecos.contains(minLocal - ConfigBase.getPassoMin())
+        && candleMinAtual.getMaxima() - minLocal >= Math.abs(ConfigOrdens.getDeltaIni())){
+            deltaMin = true; //ENTRADA ABAIXO
+            listaPrecos.add(minLocal - ConfigBase.getPassoMin());
+            offsetMin = minLocal - ConfigBase.getPassoMin() - ord.getLinhaReferencia();
+        }
+    }
+    
+    private void verificaEntradaComCotacaoSubindo(){
+        //ENTRADA COM COTAÇÃO SUBINDO
+        if(deltaMax 
+        && !rDia.getListaOrdensDia().isEmpty()
+        && !rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isIniciada()){
+            rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setOffset(offsetMax);
+            if(!rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isTemContMov())
+                rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.COMPRA);
+            else 
+                rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.VENDA);
+        }
+        controladorOrdens.testaListaOrdens(candleMinAtual, rDia);
+    }
+    
+    private void verificaEntradaComCotacaoDescendo(){
+         //ENTRADA COM COTAÇÃO DESCENDO
+        if(deltaMin
+        && !rDia.getListaOrdensDia().isEmpty()
+        && !rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isIniciada()){
+            rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setOffset(offsetMin);
+            if(!rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isTemContMov())
+                rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.VENDA);
+            else 
+                rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).setLadoOrdem(LadoOrdem.COMPRA);
+        }
+        controladorOrdens.testaListaOrdens(candleMinAtual, rDia);
+    }
+    
+    private void verificaSeSaiu_ColocaNovasOdens(){
+        //SE SAIU, COLOCA NOVAS ORDENS
+        if(!rDia.getListaOrdensDia().isEmpty()
+        && (rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isAlvoExecutado()
+            || rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isStopExecutado()
+            || rDia.getListaOrdensDia().get(rDia.getListaOrdensDia().size()-1).isTrStopExecutado())){
+            maxLocal = Float.NEGATIVE_INFINITY;
+            minLocal = Float.POSITIVE_INFINITY;
+            offsetMax = 0;
+            offsetMin = 0;
+            deltaMin = false;
+            deltaMax = false;
+            ord = new OrdemOCO();
+            ord.configuraLinhasEntradaESaidas(rDia.getAbertura());
+            rDia.adicionaOrdemNaLista(ord);
+        }
+    }
+    
 }

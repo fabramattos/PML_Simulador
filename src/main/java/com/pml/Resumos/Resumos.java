@@ -467,7 +467,7 @@ public abstract class Resumos implements Serializable{
         return gerRisco;
     }
 
-    public boolean isOrdemExecutada() {
+    public boolean executouAlgumaOrdem() {
         return ordemExecutada;
     }
 

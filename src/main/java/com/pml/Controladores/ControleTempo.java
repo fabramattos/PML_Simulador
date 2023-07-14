@@ -3,8 +3,10 @@ package com.pml.Controladores;
 import com.pml.Configuracoes.ConfigBase;
 import com.pml.InterfaceGrafica.IG;
 import java.time.LocalDateTime;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 import com.pml.Resumos.Relatorios;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -172,14 +174,6 @@ public class ControleTempo {
     }
 
     /**
-     * Procura na lista de estrategias sugeridas a primeira data.
-     * @return a posição na lista minuto correspondente
-     */
-    public int buscaMinutoInicial() {
-        return  Candle.getListaCandleMinuto().indexOf(Relatorios.getPrimeiraOrdemSugerida());
-    }
-
-    /**
      * Encontra o minuto inicial (primeiro dado na planilha de candles) para iniciar as simulações, baseado
      * no dia/mes/ano informado
      * @param data
@@ -189,31 +183,22 @@ public class ControleTempo {
      * @return a posição na lista de candles onde inicia a simulação
      */
     public int buscaMinutoInicial(boolean data, int dia, int mes, int ano) {
-        String msg = "";
-        int min = 0;
-        if (data) {
-            LocalDateTime dataBuscada = LocalDateTime.of(ano, mes, dia, 0, 0);
-            Candle candleDesejado = new Candle();
-            candleDesejado.setData(dataBuscada);
-            
-            for (int i = 0; i < Candle.getListaCandleMinuto().size(); i++) {
-                //verifica se a data na lista candle minuto é igual ou passou a data desejada
-                if (Candle.getListaCandleMinuto().get(i).getData().toLocalDate().compareTo(candleDesejado.getData().toLocalDate()) >=0 ){
-                    min = i;
-                    msg = "Data Inicial encontrada.\n";
-                    break;
-                }
-            }
-        }
-        msg += Candle.getListaCandleMinuto().get(min).printData() + "\n";
-        IG.textoAdd(msg);
-        return min;
-    }
+        if (!data)
+            return 0;
 
+        LocalDateTime dataBuscada = LocalDateTime.of(ano, mes, dia, 0, 0);
+
+        for (int i = 0; i < Candle.getListaCandleMinuto().size(); i++) {
+            if (Candle.getListaCandleMinuto().get(i).getData().compareTo(dataBuscada) >=0 )
+                return i;
+        }
+        return 0;
+    }
+    
     /**
      * @param diadD1
      * @param diaD0
-     * @return  TRUE se passou dia
+     * @return  TRUE se ultimo candle do dia
      */
     public boolean verificaSeEhUltimoCandleDoDia(Candle proximo, Candle atual) {
         if(proximo == null)
@@ -251,26 +236,20 @@ public class ControleTempo {
      * @return
      */
     public int buscaMinutoFinal(boolean data, int dia, int mes, int ano) {
-        String msg = "\n";
-        int min = Candle.getListaCandleMinuto().size() - 1;
-        if (data) {
-            LocalDateTime dataBuscada = LocalDateTime.of(ano, mes, dia, 0, 0);
-            Candle candleDesejado = new Candle();
-            candleDesejado.setData(dataBuscada);
+        int posfinal = Candle.getListaCandleMinuto().size() - 1;
+        
+        if (!data) 
+             return posfinal;
+        
+        LocalDateTime dataBuscada = LocalDateTime.of(ano, mes, dia, 0, 0);
             
-            for (int i = Candle.getListaCandleMinuto().size() - 1; i>0; i--) {
-                //verifica se a data na lista candle minuto é igual ou passou a data desejada
-                if (Candle.getListaCandleMinuto().get(i).getData().toLocalDate().compareTo(candleDesejado.getData().toLocalDate()) <=0 ){
-                    min = i;
-                    msg += "Data Final encontrada.\n";
-                    break;
-                }
-            }
+        for (int i = posfinal; i > 0; i--) {
+            if (Candle.getListaCandleMinuto().get(i).getData().compareTo(dataBuscada) <=0 )
+                return i;
         }
-        msg += Candle.getListaCandleMinuto().get(min).printData() + "\n";
-        IG.textoAdd(msg);
-        return min;
+        return posfinal;
     }
+    
 
     /**
      * verifica se o minuto do candle atual é multiplo do valor informado

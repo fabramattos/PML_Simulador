@@ -1,55 +1,40 @@
-package com.pml.InterfaceGrafica;
+package com.pml.Simulacoes.AberturaCompleto;
 
-import javax.swing.JOptionPane;
-import com.pml.simulacao.Candle;
-import com.pml.Configuracoes.ConfigOrdens;
-import static com.pml.InterfaceGrafica.IG.setPodeAbrirSimulacao;
-import com.pml.Resumos.Relatorios;
+import com.pml.infra.Candle;
+import com.pml.InterfaceGrafica.IG;
+import com.pml.InterfaceGrafica.IG_GerRisco;
 import com.pml.Ordens.LadoOrdem;
-import com.pml.Simulacoes.Sim_AberturaCompleto;
+import com.pml.Simulacoes.IG_InterfaceSimulacao;
 
 /**
  *
  * @author fabra
  */
-public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
+public class IG_AberturaCompleto extends IG_InterfaceSimulacao {
 
-    Thread t1, threadTimer;
-    double maxContador = 1;
-    
     /**
      * Creates new form IG_UE
      */
-    public IG_Sim_AberturaCompleto(){
-        initComponents();
-        IG_GerRisco.resetPodeSimular();
-        IG.setPodeAbrirSimulacao(false);
-        threadTimer = new Thread(() -> {
-            while(true){
-                if(!jButton1.isEnabled()){
-                    try {
-                        verificaDados();
-                        verificaConfigRelatorios();
-                        verificaDados();
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {}
-                }
-            }
-        });
-        threadTimer.start();
+    public IG_AberturaCompleto() {
     }
-    
-    
+
+    @Override
+    public void abreinterface() {
+        initComponents();
+        super.abreinterface();
+    }
+
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jButton1 = new javax.swing.JButton();
+        jButton_executar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jRelatorioDetalhado = new javax.swing.JRadioButton();
         jRelatorioCompleto = new javax.swing.JRadioButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButton_abortar = new javax.swing.JButton();
+        jButton_gerRisco = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         jPassoLimOp = new javax.swing.JFormattedTextField();
         jLimOp = new javax.swing.JFormattedTextField();
@@ -90,12 +75,12 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton1.setText("Executar");
-        jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton_executar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButton_executar.setText("Executar");
+        jButton_executar.setEnabled(false);
+        jButton_executar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButton_executarActionPerformed(evt);
             }
         });
 
@@ -106,21 +91,11 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
         jRelatorioDetalhado.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioDetalhado.setText("Detalhado");
         jRelatorioDetalhado.setEnabled(false);
-        jRelatorioDetalhado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         buttonGroup1.add(jRelatorioCompleto);
         jRelatorioCompleto.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioCompleto.setSelected(true);
         jRelatorioCompleto.setText("Completo");
-        jRelatorioCompleto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -143,19 +118,20 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton2.setText("Abortar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton_abortar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButton_abortar.setText("Abortar");
+        jButton_abortar.setEnabled(false);
+        jButton_abortar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton_abortarActionPerformed(evt);
             }
         });
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton3.setText("Ger. Risco");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButton_gerRisco.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButton_gerRisco.setText("Ger. Risco");
+        jButton_gerRisco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButton_gerRiscoActionPerformed(evt);
             }
         });
 
@@ -237,54 +213,24 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
 
         jTemContMov.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemContMov.setText("Contra Mov.");
-        jTemContMov.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel11.setText("Passo:");
 
         jTemOffset.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemOffset.setText("Offset");
-        jTemOffset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         jTemLimOp.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemLimOp.setText("Lim Op");
-        jTemLimOp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         jTemGain.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemGain.setText("Gain");
-        jTemGain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         jTemLoss.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemLoss.setText("Loss");
-        jTemLoss.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         jMov.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jMov.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Compra", "Venda" }));
-        jMov.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel4.setText("Qtde Max");
@@ -311,9 +257,9 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 368, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_executar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton_abortar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -373,7 +319,7 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
                                     .addComponent(jPassoLoss, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel11)
                                     .addComponent(jPassoPosMax, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jButton3))
+                            .addComponent(jButton_gerRisco))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -434,73 +380,38 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPassoLoss, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+                .addComponent(jButton_gerRisco)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton_executar)
+                    .addComponent(jButton_abortar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
-            IG.textoLimpa();
-            IG.progressoCompletoReseta();
-            IG.configuraGerais();
-            IG.setNomeSimulacao("Abertura Completo");
-            configuraEstrategia();
-            t1 = new Thread(() -> {
-                jButton1.setEnabled(false);
-                executaSimulacao();
-                jButton1.setEnabled(true);
-            });
-            t1.start();
-        }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Campo de texto contém erro");
-            IG.textoAdd("erro: " + e.getMessage() + "\n");
-            IG.textoAdd("Verifique os valores e tente novamente\n");
-            jButton1.setEnabled(true);
-        }catch(OutOfMemoryError e){
-            IG.textoAdd("Sem memória o suficiente. Processo cancelado.\n");
-            botaoExec(true);
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Campo de texto contém erro");
-            botaoExec(true);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButton_executarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_executarActionPerformed
+        cliqueBotaoExecutar(new AberturaCompleto(), jButton_executar, jButton_abortar, jButton_gerRisco, null);
+    }//GEN-LAST:event_jButton_executarActionPerformed
 
-    private void atualizaInterface(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atualizaInterface
-        verificaConfigRelatorios();
-        verificaDados();
-        try{
-            IG_GerRisco.verificaInterface();
-        }catch(NullPointerException e){
-            System.out.println("nao iniciado");
-        }
-    }//GEN-LAST:event_atualizaInterface
+    private void jButton_abortarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_abortarActionPerformed
+        cliqueBotaoAbortar();
+    }//GEN-LAST:event_jButton_abortarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        IG.aborta(jButton1, t1);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new IG_GerRisco().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void jButton_gerRiscoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_gerRiscoActionPerformed
+        cliqueBotaoGerRisco();
+    }//GEN-LAST:event_jButton_gerRiscoActionPerformed
 
     private void close(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_close
-        threadTimer.stop();
-        IG.aborta(jButton1, t1);
-        setPodeAbrirSimulacao(true);
+        cliqueBotaoFechar();
     }//GEN-LAST:event_close
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    public static javax.swing.JButton jButton1;
-    public static javax.swing.JButton jButton2;
-    public static javax.swing.JButton jButton3;
+    public static javax.swing.JButton jButton_abortar;
+    public static javax.swing.JButton jButton_executar;
+    public static javax.swing.JButton jButton_gerRisco;
     private javax.swing.JFormattedTextField jGain;
     private javax.swing.JFormattedTextField jGainFin;
     private javax.swing.JLabel jLabel11;
@@ -536,108 +447,75 @@ public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
     private javax.swing.JCheckBox jTemOffset;
     // End of variables declaration//GEN-END:variables
 
-    private void verificaConfigRelatorios() {                                
+
+    @Override
+    protected void atualizaInterface() {
         IG.setTemRelCompletoDiario(jRelatorioCompleto.isSelected());
         IG_GerRisco.recebeTipoRelatorio(jRelatorioCompleto);
-    }                               
         
-    public static void botaoExec(boolean clicavel){
-        jButton1.setEnabled(clicavel);
-    }
-    
-    private void verificaDados(){
-        jButton1.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular());
-        
+        jButton_executar.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular());
+
         jOffset.setEnabled(jTemOffset.isSelected());
         jOffsetFin.setEnabled(jTemOffset.isSelected() && jRelatorioCompleto.isSelected());
         jPassoOffset.setEnabled(jTemOffset.isSelected() && jRelatorioCompleto.isSelected());
         jLabel6.setEnabled(jTemOffset.isSelected() && jRelatorioCompleto.isSelected());
-        
+
         jLimOp.setEnabled(jTemLimOp.isSelected());
         jLimOpFin.setEnabled(jTemLimOp.isSelected() && jRelatorioCompleto.isSelected());
         jPassoLimOp.setEnabled(jTemLimOp.isSelected() && jRelatorioCompleto.isSelected());
         jLabel13.setEnabled(jTemLimOp.isSelected() && jRelatorioCompleto.isSelected());
-        
+
         jGain.setEnabled(jTemGain.isSelected());
         jGainFin.setEnabled(jTemGain.isSelected() && jRelatorioCompleto.isSelected());
         jPassoGain.setEnabled(jTemGain.isSelected() && jRelatorioCompleto.isSelected());
         jLabel8.setEnabled(jTemGain.isSelected() && jRelatorioCompleto.isSelected());
-        
+
         jLoss.setEnabled(jTemLoss.isSelected());
         jLossFin.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
         jPassoLoss.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
         jLabel7.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
-        
     }
     
-    private void executaSimulacao(){
-        if(jRelatorioDetalhado.isSelected())
-            new Relatorios().detalhado(new Sim_AberturaCompleto(false));
-        else
-            new Relatorios().completo(new Sim_AberturaCompleto(false));
-    }
-    
-    private void configuraEstrategia() throws NumberFormatException {
-        boolean
+    @Override
+    protected void getVariaveisDaInterfaceDaSimulacao() {
         temCompleto = jRelatorioCompleto.isSelected();
-        
-        double
-        passoDelta = 1,
-        passoOffset = Double.parseDouble(jPassoOffset.getText().replace(",", ".")),
-        passoLimOp = Double.parseDouble(jPassoLimOp.getText().replace(",", ".")),
-        passoGain = Double.parseDouble(jPassoGain.getText().replace(",", ".")),
-        passoLoss = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
-        
-        ConfigOrdens.configuraCompleto(temCompleto);
-        
-        //INICIA VARREDURA DA LISTA
-        boolean 
-        atualQtde = false,
-        temDelta = false,
-        temOffset = jTemOffset.isSelected(),
-        temLimOp = jTemLimOp.isSelected(),
-        temAlvo = jTemGain.isSelected(),
-        temStop = jTemLoss.isSelected(),
-        temContMov = jTemContMov.isSelected();
-        
-        int 
-        pos = Integer.parseInt(jPos.getText().replace(",", ".")),
-        posMax = Integer.parseInt(jPosMax.getText().replace(",", ".")),
-        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", ".")),
-        passoPos = Integer.parseInt(jPassoPosMax.getText().replace(",", "."));
-        
-        double
-        delta = 0, deltaFin = 0,
-        e = Double.parseDouble(jOffset.getText().replace(",", ".")),
-        eFin = Double.parseDouble(jOffsetFin.getText().replace(",", ".")),
-        lim = Double.parseDouble(jLimOp.getText().replace(",", ".")),
-        limFin = Double.parseDouble(jLimOpFin.getText().replace(",", ".")),
-        g = Double.parseDouble(jGain.getText().replace(",", ".")),
-        gFin = Double.parseDouble(jGainFin.getText().replace(",", ".")),
-        l = Double.parseDouble(jLoss.getText().replace(",", ".")),
-        lFin = Double.parseDouble(jLossFin.getText().replace(",", "."));
-        
-        LadoOrdem mov;
-        switch (jMov.getSelectedIndex()){
-            case 0:
-                mov = LadoOrdem.COMPRA;
-                break;
-    
-            case 1: 
-                mov = LadoOrdem.VENDA;
-                break;
-                
-            default:
-                mov = LadoOrdem.INDEF;
-                break;
-        }
-            
 
-        ConfigOrdens.setBooleans(temDelta, temLimOp, temOffset, temAlvo, temStop, temContMov, atualQtde);
-        ConfigOrdens.setBase(mov, pos, posMax, posMaxFin);
-        ConfigOrdens.setEstrategiaLoop(delta, deltaFin, lim, limFin, e, eFin, g, gFin, l, lFin);
-        ConfigOrdens.setPasso(passoPos, passoDelta, passoOffset, passoLimOp, passoGain, passoLoss);
-        ConfigOrdens.limpaConfigTrStop();
+        passoOffset = Double.parseDouble(jPassoOffset.getText().replace(",", "."));
+        passoLimOp = Double.parseDouble(jPassoLimOp.getText().replace(",", "."));
+        passoGain = Double.parseDouble(jPassoGain.getText().replace(",", "."));
+        passoLoss = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
+
+        temOffset = jTemOffset.isSelected();
+        temLimOp = jTemLimOp.isSelected();
+        temAlvo = jTemGain.isSelected();
+        temStop = jTemLoss.isSelected();
+        temContMov = jTemContMov.isSelected();
+
+        pos = Integer.parseInt(jPos.getText().replace(",", "."));
+        posMax = Integer.parseInt(jPosMax.getText().replace(",", "."));
+        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", "."));
+        passoPos = Integer.parseInt(jPassoPosMax.getText().replace(",", "."));
+
+        e = Double.parseDouble(jOffset.getText().replace(",", "."));
+        eFin = Double.parseDouble(jOffsetFin.getText().replace(",", "."));
+        lim = Double.parseDouble(jLimOp.getText().replace(",", "."));
+        limFin = Double.parseDouble(jLimOpFin.getText().replace(",", "."));
+        g = Double.parseDouble(jGain.getText().replace(",", "."));
+        gFin = Double.parseDouble(jGainFin.getText().replace(",", "."));
+        l = Double.parseDouble(jLoss.getText().replace(",", "."));
+        lFin = Double.parseDouble(jLossFin.getText().replace(",", "."));
+
+        mov = switch (jMov.getSelectedIndex()) {
+            case 0 -> LadoOrdem.COMPRA;
+            case 1 -> LadoOrdem.VENDA;
+            default -> LadoOrdem.INDEF;
+        };
     }
-    
+
+@Override
+public String getNome() {
+        return "Abertura Completo";
+    }
+
+
 }

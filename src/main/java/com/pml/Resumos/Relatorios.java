@@ -16,12 +16,13 @@ import com.pml.Excel.ExcelMensal;
 import com.pml.Excel.ExcelOrdensExecutadas;
 import com.pml.Excel.ExcelOrdensSugeridas;
 import com.pml.InterfaceGrafica.IG;
-import com.pml.Simulacoes.Simulacao;
+import com.pml.Simulacoes.SimulacaoBase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.pml.simulacao.Candle;
-import com.pml.simulacao.Clone;
+import com.pml.infra.Candle;
+import com.pml.infra.Clone;
+import javax.swing.SwingWorker;
 
 /**
  * @author Felipe Mattos
@@ -48,7 +49,7 @@ public class Relatorios{
      */
     private static List<List<Ordem>> relatorioOrdensSugeridas = new ArrayList();
     private static boolean gravouRelatorios = false;
-
+    
     /**
      * 
      * @param rDia a ser procurado
@@ -279,39 +280,39 @@ public class Relatorios{
         Relatorios.gravouRelatorios = false;
     }
     
-    public void detalhado(Simulacao simulacao) throws OutOfMemoryError{
+    public void detalhado(SimulacaoBase simulacao, SwingWorker worker) throws OutOfMemoryError{
         IG.textoAdd("\nDeletando arquivos temporários\n");
         ArquivoTemp.apagaArquivosTemp();
-        IG.setPodeSelecionarRelatorios(false);
+        
         ControleTempo timmer = new ControleTempo();
         String tempoDecorrido;
         
         // INICIA ANALISE
-        IG.textoAdd("SIMULANDO\n");
+
         
         instanciaRelatorios_PrimeiraSimulacao();
         timmer.disparaTimmer();
-        simulacao.simula();
+        simulacao.simula(worker);
         tempoDecorrido = timmer.getTempoDecorridoString();
         IG.textoAdd("Tempo da simulação: " + tempoDecorrido);
         geraRelatoriosDetalhados();
         IG.setPodeSelecionarRelatorios(true);
     }
     
-    
-    public void completo(Simulacao simulacao) throws OutOfMemoryError{
+    public void completo(SimulacaoBase simulacao, SwingWorker worker) throws OutOfMemoryError {
+        ControleTempo controleTempo = new ControleTempo();
+        
         IG.textoAdd("\nDeletando arquivos temporários\n");
         ArquivoTemp.apagaArquivosTemp();
         
-        IG.setPodeSelecionarRelatorios(false);
         IG.setSimulacaoCompleta();
-        ControleTempo controleTempo = new ControleTempo();
-        
-        long numSimulacao = 1;
+       
         resetLoop();
+        corrigeLoop();
+         
         //CORREÇÃO PARA NAO GERAR RELATORIO DE CANDLE NO COMPLETO
         ConfigBase.setTemRelatorioCandles(false);
-        IG.textoAdd("\nSIMULANDO\n");
+        long numSimulacao = 1;
         progressoAtualiza();
         IG.progressoCompletoReseta();
         IG.textoAdd("=======INICIANDO ITERAÇÃO======= \n");
@@ -328,6 +329,7 @@ public class Relatorios{
                                             for(double trStopPtsAcion = trStopAcionamentoIni; trStopPtsAcion<=trStopAcionamentoFin; trStopPtsAcion = arredondaSoma(trStopPtsAcion, passoTrStop_Acionamento)){
                                                 for(double trStopPtsMin = trStopPtsMinIni; trStopPtsMin<=trStopPtsMinFin; trStopPtsMin = arredondaSoma(trStopPtsMin, passoTrStop_PtsMin)){
                                                     for(double trStopFreqAtualiz = trStopFreqAtualizacaoIni; trStopFreqAtualiz<=trStopFreqAtualizacaoFin; trStopFreqAtualiz = arredondaSoma(trStopFreqAtualiz, passoTrStop_FreqAtualizacao)){
+
                                                         controleTempo.disparaTimmer();
                                                         limpaRelatorios_Loop();
                                             
@@ -347,11 +349,17 @@ public class Relatorios{
                                                         ConfigOrdens.setTrStop(temTrStop, trStopPtsAcion, trStopPtsMin, trStopFreqAtualiz);
                                                         ConfigOrdens.setGerRisco(saldoDesej, gerRisco_SaldoMinimo, ptsCont, prejPerm);
                                                         
+                                                        if (worker.isCancelled()){
+                                                            geraExcelCompleto();
+                                                            IG.setPodeSelecionarRelatorios(true);
+                                                            return;  
+                                                        }
+                                                        
                                                         IG.atualizaSimulacaoAtual(numSimulacao++);
-                                                        simulacao.simula();
+                                                        simulacao.simula(worker);
                                                         geraRelatoriosCompleto();
                                                         IG.atualizaTempoEstimado(controleTempo.calculaTempoNecessarioMedio(simulacoesTotais));
-                                                        
+
                                                     }
                                                 }
                                             }
@@ -370,13 +378,6 @@ public class Relatorios{
         IG.textoAdd("Fim da simulação Completa \n");
         geraExcelCompleto();
         IG.setPodeSelecionarRelatorios(true);
-    }
-    
-    private void simulaSugerida(Simulacao simulacao){
-        limpaRelatorios_Aplicado();
-        simulacao.configura(true);
-        simulacao.simula();
-        geraRelatorioSugerido();
     }
     
     /**
@@ -456,64 +457,10 @@ public class Relatorios{
         
         IG.atualizaTotalSimulacoes((int)simTotalMinutos);
         simulacoesTotais = (int)simTotalMinutos;
-        simTotalMinutos = Math.round(simTotalMinutos * (double)Simulacao.getTotalDeMinutos());
+        simTotalMinutos = Math.round(simTotalMinutos * (double)SimulacaoBase.getTotalDeMinutos());
         IG.progressoCompletoAtualiza((int)simTotalMinutos, 0);
         
     }
-    
-    /**
-     * Verifica se IG solicita análise por períodos. Caso sim, faz a analise desejada
-     * @return TRUE se possui alguma analise de periodos
-     */
-//    private boolean verificaAnalisePeriodos(){
-//        if(!ConfigBase.isAnalisePeriodos())
-//            return false;
-//        
-//        if(ConfigBase.isSugerida()){
-//            new ResumoPeriodoSugestao().geraResumo(ConfigBase.getDiasAnalise(), ConfigBase.getDiasAplicado());
-//            return true;
-//        }
-//
-//        if(!ConfigBase.isAnaliseSaldo())
-//            new ResumoPeriodoRelatorio().geraResumo(ConfigBase.getDiasAnalise(), ConfigBase.getDiasAplicado());
-//////        else
-//////            new ResumoPeriodoRelatorio().geraResumo(ConfigBase.getDiasAnalise(),ConfigBase.getSaldoDesj() , ConfigBase.getPrejMax());
-//        
-//        return true;
-//    }
-    
-//    private boolean verificaSugerida(){
-//        if(ConfigBase.isSugerida()){
-//            new GeraEstrategias().geraListaEstrategias();
-//            return true;
-//        }
-//        return false;
-//    }
-//    
-//    public static boolean verificaAnalisePeriodos2(){
-//        if(!ConfigBase.isAnalisePeriodos())
-//            return false;
-//        
-//        if(ConfigBase.isSugerida()){
-//            new ResumoPeriodoSugestao().geraResumo(ConfigBase.getDiasAnalise(), ConfigBase.getDiasAplicado());
-//            return true;
-//        }
-//
-//        if(!ConfigBase.isAnaliseSaldo())
-//            new ResumoPeriodoRelatorio().geraResumo(ConfigBase.getDiasAnalise(), ConfigBase.getDiasAplicado());
-//////        else
-//////            new ResumoPeriodoRelatorio().geraResumo(ConfigBase.getDiasAnalise(),ConfigBase.getSaldoDesj() , ConfigBase.getPrejMax());
-//        
-//        return true;
-//    }
-//    
-//    public static boolean verificaSugerida2(){
-//        if(ConfigBase.isSugerida()){
-//            new GeraEstrategias().geraListaEstrategias();
-//            return true;
-//        }
-//        return false;
-//    }
     
     private double arredondaSoma(double valor1, double valor2){
         return (Math.round((valor1 + valor2) * 100.0)) / 100.0;
@@ -689,32 +636,26 @@ public class Relatorios{
         Relatorios.gravouRelatorios = true;
     }
 
-    private void geraRelatorioSugerido() {
-        ControleTempo timmer = new ControleTempo();
-        String tempoDecorrido;
-        
-        IG.textoAdd("\n=====GERANDO RELATORIOS EXCEL===== \n");
-        
-        List<AcoesExcel> listaRelatoriosExcel = new ArrayList();
-        listaRelatoriosExcel.add(new ExcelConfiguracoes());
-        listaRelatoriosExcel.add(new ExcelOrdensSugeridas());
-        listaRelatoriosExcel.add(new ExcelDiario());
-        listaRelatoriosExcel.add(new ExcelMensal());
-        listaRelatoriosExcel.add(new ExcelOrdensExecutadas());
-        
-        timmer.disparaTimmer();
-        ExcelHandler excel = new ExcelHandler(listaRelatoriosExcel);
-        tempoDecorrido = timmer.getTempoDecorridoString();
-        IG.textoAdd("Arquivos gerados em: " + tempoDecorrido);
-        
-        timmer.disparaTimmer();
-        excel.gravaArquivo();
-        tempoDecorrido = timmer.getTempoDecorridoString();
-        IG.textoAdd("Arquivos gravados em: " + tempoDecorrido);
-    }
-    
     public static boolean isGravouRelatorios(){
         return Relatorios.gravouRelatorios;
+    }
+
+    /**
+     * Se algum parametro não foi setado corretamente, iguala variáveis para evitar loop infinito ou saida cedo
+     */
+    private void corrigeLoop() {
+        posMaxFin =  Math.max(posMaxFin, posMaxIni);
+        deltaFin = Math.max(deltaFin, deltaIni);
+        limOpFin = Math.max(limOpFin, limOpIni);
+        offsetFin = Math.max(offsetFin, offsetIni);
+        gFin = Math.max(gFin, gIni);
+        lFin = Math.max(lFin, lIni);
+        gerRisco_SaldoFin = Math.max(gerRisco_SaldoFin, gerRisco_SaldoIni);
+        gerRisco_PtsContFin = Math.max(gerRisco_PtsContFin, gerRisco_PtsContIni);
+        gerRisco_PrejPermFin = Math.max(gerRisco_PrejPermFin, gerRisco_PrejPermIni);
+        trStopAcionamentoFin = Math.max(trStopAcionamentoFin, trStopAcionamentoIni);
+        trStopPtsMinFin = Math.max(trStopPtsMinFin, trStopPtsMinIni);
+        trStopFreqAtualizacaoFin = Math.max(trStopFreqAtualizacaoFin, trStopFreqAtualizacaoIni);
     }
     
 }

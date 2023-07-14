@@ -4,7 +4,7 @@
  *
  * Obs: MES começa em 0
  * */
-package com.pml.simulacao;
+package com.pml.infra;
 
 import com.pml.Resumos.ResumoDia;
 import com.pml.Resumos.Relatorios;
@@ -248,7 +248,7 @@ public class Candle implements Comparable<Candle> {
     
     public static void resetaCandleIntermediárioTemp(){
         Candle.maxCandleTemp = Double.NEGATIVE_INFINITY;
-        Candle.minCandleTemp = Double.POSITIVE_INFINITY;;
+        Candle.minCandleTemp = Double.POSITIVE_INFINITY;
     }
     
     public void atualizaCandleResultados(ResumoDia rDia){

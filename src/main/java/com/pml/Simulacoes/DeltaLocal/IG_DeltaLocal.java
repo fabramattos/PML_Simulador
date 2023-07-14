@@ -1,32 +1,13 @@
-package com.pml.InterfaceGrafica;
+package com.pml.Simulacoes.DeltaLocal;
 
-import javax.swing.JOptionPane;
-import com.pml.simulacao.Candle;
-import com.pml.Configuracoes.ConfigOrdens;
-import com.pml.Ordens.LadoOrdem;
-import com.pml.Ordens.OrdemOCO;
-import com.pml.Simulacoes.Sim_DeltaLocal;
-import com.pml.Resumos.Relatorios;
+import com.pml.infra.Candle;
+import com.pml.InterfaceGrafica.IG;
+import com.pml.InterfaceGrafica.IG_GerRisco;
+import com.pml.Simulacoes.IG_InterfaceSimulacao;
 
-public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
-
-    Thread t1, threadTimer;
+public class IG_DeltaLocal extends IG_InterfaceSimulacao {
     
-    public IG_Sim_DeltaLocal() {
-        initComponents();
-        IG.setPodeAbrirSimulacao(false);
-        IG_GerRisco.resetPodeSimular();
-        threadTimer = new Thread(() -> {
-            while(this.isVisible()){
-                try {
-                    verificaDados();
-                    verificaConfigRelatorios();
-                    verificaConfigValores();
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {}
-            }
-        });
-        threadTimer.start();
+    public IG_DeltaLocal() {
     }
 
     @SuppressWarnings("unchecked")
@@ -37,10 +18,8 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jRelatorioDetalhado = new javax.swing.JRadioButton();
         jRelatorioCompleto = new javax.swing.JRadioButton();
-        jLabel5 = new javax.swing.JLabel();
-        jPasso = new javax.swing.JFormattedTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        botaoExecutar = new javax.swing.JButton();
+        botaoAbortar = new javax.swing.JButton();
         jPos = new javax.swing.JFormattedTextField();
         jPosMax = new javax.swing.JFormattedTextField();
         jPosMaxFin = new javax.swing.JFormattedTextField();
@@ -65,7 +44,7 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLoss = new javax.swing.JFormattedTextField();
-        jButton3 = new javax.swing.JButton();
+        botaoGerRisco = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DayTrade: Delta Local");
@@ -82,33 +61,10 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
         jRelatorioDetalhado.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioDetalhado.setSelected(true);
         jRelatorioDetalhado.setText("Detalhado");
-        jRelatorioDetalhado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         buttonGroup1.add(jRelatorioCompleto);
         jRelatorioCompleto.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioCompleto.setText("Completo");
-        jRelatorioCompleto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel5.setText("Passo:");
-
-        jPasso.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jPasso.setText("0,5");
-        jPasso.setEnabled(false);
-        jPasso.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jPasso.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jPassoverificaTecla(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -119,38 +75,32 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
                 .addComponent(jRelatorioDetalhado)
                 .addGap(18, 18, 18)
                 .addComponent(jRelatorioCompleto)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasso, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 38, Short.MAX_VALUE))
+                .addGap(0, 138, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(6, 6, 6)
+                .addGap(7, 7, 7)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jRelatorioDetalhado)
-                    .addComponent(jRelatorioCompleto)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPasso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jRelatorioCompleto))
                 .addContainerGap())
         );
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton1.setText("Executar");
-        jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        botaoExecutar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoExecutar.setText("Executar");
+        botaoExecutar.setEnabled(false);
+        botaoExecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                botaoExecutarActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton2.setText("Abortar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        botaoAbortar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoAbortar.setText("Abortar");
+        botaoAbortar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                botaoAbortarActionPerformed(evt);
             }
         });
 
@@ -242,11 +192,11 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
         jLoss.setText("1");
         jLoss.setToolTipText("");
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton3.setText("Ger. Risco");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        botaoGerRisco.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoGerRisco.setText("Ger. Risco");
+        botaoGerRisco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                botaoGerRiscoActionPerformed(evt);
             }
         });
 
@@ -281,9 +231,9 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(botaoExecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(botaoAbortar, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel14)
                                 .addGap(52, 52, 52)
@@ -315,7 +265,7 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
                                 .addComponent(jLabel6)
                                 .addGap(17, 17, 17)
                                 .addComponent(jPassoPos, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton3))
+                            .addComponent(botaoGerRisco))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -366,75 +316,44 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
                         .addComponent(jLabel7)
                         .addComponent(jPassoLoss, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(botaoGerRisco)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(botaoAbortar)
+                    .addComponent(botaoExecutar))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPassoverificaTecla(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPassoverificaTecla
-        char enter = evt.getKeyChar();
-        if(enter == ',')
-            return;
-        if(!(Character.isDigit(enter)))
-        evt.consume();
-    }//GEN-LAST:event_jPassoverificaTecla
+    @Override
+    public void abreinterface() {
+        initComponents();
+        super.abreinterface();
+    }
+    
+    private void botaoExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExecutarActionPerformed
+        cliqueBotaoExecutar(new DeltaLocal(), botaoExecutar, botaoAbortar, botaoGerRisco, null);
+    }//GEN-LAST:event_botaoExecutarActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
-            IG.textoLimpa();
-            IG.progressoCompletoReseta();
-            IG.configuraGerais();
-            IG.setNomeSimulacao("Delta Local");
-            configuraEstrategia();
-            t1 = new Thread(() -> {
-                jButton1.setEnabled(false);
-                executaSimulacao();
-                jButton1.setEnabled(true);
-            });
-              t1.start();
-        }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Campo de texto contém erro");
-            IG.textoAdd("erro: " + e.getMessage() + "\n");
-            IG.textoAdd("Verifique os valores e tente novamente");
-            jButton1.setEnabled(true);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void atualizaInterface(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atualizaInterface
-        verificaConfigRelatorios();
-        verificaConfigValores();
-        try{
-            IG_GerRisco.verificaInterface();
-        }catch(NullPointerException e){
-            System.out.println("nao iniciado");
-        }
-    }//GEN-LAST:event_atualizaInterface
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        IG.aborta(jButton1, t1);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void botaoAbortarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAbortarActionPerformed
+        cliqueBotaoAbortar();
+    }//GEN-LAST:event_botaoAbortarActionPerformed
 
     private void close(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_close
-        threadTimer.stop();
-        IG.aborta(jButton1, t1);
-        IG.setPodeAbrirSimulacao(true);
+        cliqueBotaoFechar();
     }//GEN-LAST:event_close
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new IG_GerRisco().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void botaoGerRiscoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoGerRiscoActionPerformed
+        cliqueBotaoGerRisco();
+    }//GEN-LAST:event_botaoGerRiscoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton botaoAbortar;
+    public static javax.swing.JButton botaoExecutar;
+    public static javax.swing.JButton botaoGerRisco;
     private javax.swing.ButtonGroup buttonGroup1;
-    public static javax.swing.JButton jButton1;
-    public static javax.swing.JButton jButton2;
-    public static javax.swing.JButton jButton3;
     private javax.swing.JFormattedTextField jDelta;
     private javax.swing.JFormattedTextField jDeltaFin;
     private javax.swing.JFormattedTextField jGain;
@@ -445,7 +364,6 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -453,7 +371,6 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField jLoss;
     private javax.swing.JFormattedTextField jLossFin;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JFormattedTextField jPasso;
     private javax.swing.JFormattedTextField jPassoDelta;
     private javax.swing.JFormattedTextField jPassoGain;
     private javax.swing.JFormattedTextField jPassoLoss;
@@ -466,20 +383,38 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
     private javax.swing.JCheckBox jTemContMov;
     // End of variables declaration//GEN-END:variables
 
-    private void verificaConfigRelatorios() {                                
+    @Override
+    protected void getVariaveisDaInterfaceDaSimulacao() {
+        temCompleto = jRelatorioCompleto.isSelected();
+        
+        passoDelta = Double.parseDouble(jPassoDelta.getText().replace(",", "."));
+        passoGain = Double.parseDouble(jPassoGain.getText().replace(",", "."));
+        passoLoss = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
+        
+        atualQtde = true;
+        temDelta = true;
+        temAlvo = true;
+        temStop = true;
+        temContMov = jTemContMov.isSelected();
+        
+        pos = Integer.parseInt(jPos.getText().replace(",", "."));
+        posMax = Integer.parseInt(jPosMax.getText().replace(",", "."));
+        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", "."));
+        passoPos = Integer.parseInt(jPassoPos.getText().replace(",", "."));
+        
+        delta = Double.parseDouble(jDelta.getText().replace(",", "."));
+        deltaFin = Double.parseDouble(jDeltaFin.getText().replace(",", "."));
+        g = Double.parseDouble(jGain.getText().replace(",", "."));
+        gFin = Double.parseDouble(jGainFin.getText().replace(",", "."));
+        l = Double.parseDouble(jLoss.getText().replace(",", "."));
+        lFin = Double.parseDouble(jLossFin.getText().replace(",", "."));
+    }
+
+    @Override
+    protected void atualizaInterface() {
         IG.setTemRelCompletoDiario(jRelatorioCompleto.isSelected());
         IG_GerRisco.recebeTipoRelatorio(jRelatorioCompleto);
-    }                               
         
-    public static void botaoExec(boolean clicavel){
-        jButton1.setEnabled(clicavel);
-    }
-    
-    /**
-     * VERIFICA SE ESTRATEGIA ESTÁ EM USO (COL 0)
-     */
-    private void verificaConfigValores(){
-        verificaDados();
         jPosMaxFin.setEnabled(jRelatorioCompleto.isSelected());
         jPassoPos.setEnabled(jRelatorioCompleto.isSelected());
         jPassoDelta.setEnabled(jRelatorioCompleto.isSelected());
@@ -492,67 +427,13 @@ public class IG_Sim_DeltaLocal extends javax.swing.JFrame {
         jLabel7.setEnabled(jRelatorioCompleto.isSelected());
         jLabel8.setEnabled(jRelatorioCompleto.isSelected());
         jLabel12.setEnabled(jRelatorioCompleto.isSelected());
+        
+        botaoExecutar.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular());
     }
-    
-    private void verificaDados(){
-        jButton1.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular());
-    }
-    
-    private void executaSimulacao(){
-        Sim_DeltaLocal simulacao = new Sim_DeltaLocal(false);
-        if(jRelatorioDetalhado.isSelected())
-            new Relatorios().detalhado(simulacao);
-        else
-            new Relatorios().completo(simulacao);
-    }
-    
-    private void configuraEstrategia() throws NumberFormatException {
-        boolean
-        temCompleto = jRelatorioCompleto.isSelected();
-        
-        double
-        passoDelta = Double.parseDouble(jPassoDelta.getText().replace(",", ".")),
-        passoLimOp = 1,
-        passoOffset = 1,
-        passoGain = Double.parseDouble(jPassoGain.getText().replace(",", ".")),
-        passoLoss = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
-        
-        ConfigOrdens.configuraCompleto(temCompleto);
-        
-        //INICIA VARREDURA DA LISTA
-        boolean 
-        atualQtde = true,
-        temDelta = true,
-        temOffset = false,
-        temLimOp = false,
-        temAlvo = true,
-        temStop = true,
-        temContMov = jTemContMov.isSelected();
-        
-        int 
-        pos = Integer.parseInt(jPos.getText().replace(",", ".")),
-        posMax = Integer.parseInt(jPosMax.getText().replace(",", ".")),
-        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", ".")),
-        passoPos = Integer.parseInt(jPassoPos.getText().replace(",", "."));
-        
-        double
-        delta = Double.parseDouble(jDelta.getText().replace(",", ".")),
-        deltaFin = Double.parseDouble(jDeltaFin.getText().replace(",", ".")),
-        e = 0, eFin = 0,
-        g = Double.parseDouble(jGain.getText().replace(",", ".")),
-        gFin = Double.parseDouble(jGainFin.getText().replace(",", ".")),
-        l = Double.parseDouble(jLoss.getText().replace(",", ".")),
-        lFin = Double.parseDouble(jLossFin.getText().replace(",", ".")),
-        lim = 0, limFin = 0;
 
-        LadoOrdem mov = LadoOrdem.INDEF;
-        
-        ConfigOrdens.setBooleans(temDelta, temLimOp, temOffset, temAlvo, temStop, temContMov, atualQtde);
-        ConfigOrdens.setBase(mov, pos, posMax, posMaxFin);
-        ConfigOrdens.setEstrategiaLoop(delta, deltaFin, lim, limFin, e, eFin, g, gFin, l, lFin);
-        ConfigOrdens.setPasso(passoPos, passoDelta, passoOffset, passoLimOp, passoGain, passoLoss);
-        ConfigOrdens.adicionaNaListaDeOrdensFixas_OCO(new OrdemOCO());
-        ConfigOrdens.limpaConfigTrStop();
+    @Override
+    public String getNome() {
+        return "Delta Local";
     }
     
 }

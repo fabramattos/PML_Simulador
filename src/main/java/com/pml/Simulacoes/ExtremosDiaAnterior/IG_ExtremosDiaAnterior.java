@@ -1,31 +1,14 @@
-package com.pml.InterfaceGrafica;
+package com.pml.Simulacoes.ExtremosDiaAnterior;
 
-import javax.swing.JOptionPane;
-import com.pml.simulacao.Candle;
-import com.pml.Configuracoes.ConfigOrdens;
+import com.pml.infra.Candle;
+import com.pml.InterfaceGrafica.IG;
+import com.pml.InterfaceGrafica.IG_GerRisco;
 import com.pml.Ordens.LadoOrdem;
-import com.pml.Simulacoes.Sim_ExtremosDiaAnterior;
-import com.pml.Resumos.Relatorios;
+import com.pml.Simulacoes.IG_InterfaceSimulacao;
 
-public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
+public class IG_ExtremosDiaAnterior extends IG_InterfaceSimulacao {
 
-    Thread t1, threadTimer;
-    
-    public IG_Sim_ExtremosDiaAnterior() {
-        initComponents();
-        IG.setPodeAbrirSimulacao(false);
-        IG_GerRisco.resetPodeSimular();
-        threadTimer = new Thread(() -> {
-            while(this.isVisible()){
-                try {
-                    verificaDados();
-                    verificaConfigRelatorios();
-                    verificaConfigValores();
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {}
-            }
-        });
-        threadTimer.start();
+    public IG_ExtremosDiaAnterior() {
     }
 
     @SuppressWarnings("unchecked")
@@ -36,9 +19,9 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jRelatorioDetalhado = new javax.swing.JRadioButton();
         jRelatorioCompleto = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        botaoExecutar = new javax.swing.JButton();
+        botaoAbortar = new javax.swing.JButton();
+        botaoGerRisco = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jDelta = new javax.swing.JFormattedTextField();
         jTemGain = new javax.swing.JCheckBox();
@@ -63,11 +46,6 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DayTrade: Extremos Dia Anterior");
-        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                mouse(evt);
-            }
-        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 close(evt);
@@ -81,20 +59,10 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
         jRelatorioDetalhado.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioDetalhado.setSelected(true);
         jRelatorioDetalhado.setText("Detalhado");
-        jRelatorioDetalhado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         buttonGroup1.add(jRelatorioCompleto);
         jRelatorioCompleto.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioCompleto.setText("Completo");
-        jRelatorioCompleto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -121,28 +89,28 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton1.setText("Executar");
-        jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        botaoExecutar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoExecutar.setText("Executar");
+        botaoExecutar.setEnabled(false);
+        botaoExecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                botaoExecutarActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton2.setText("Abortar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        botaoAbortar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoAbortar.setText("Abortar");
+        botaoAbortar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                botaoAbortarActionPerformed(evt);
             }
         });
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton3.setText("Ger. Risco");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        botaoGerRisco.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoGerRisco.setText("Ger. Risco");
+        botaoGerRisco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                botaoGerRiscoActionPerformed(evt);
             }
         });
 
@@ -156,11 +124,6 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
 
         jTemGain.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemGain.setText("Gain");
-        jTemGain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
         jPanel2.add(jTemGain, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
 
         jGain.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
@@ -179,11 +142,6 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
 
         jTemLoss.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemLoss.setText("Loss");
-        jTemLoss.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
         jPanel2.add(jTemLoss, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, -1, -1));
 
         jLoss.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
@@ -236,20 +194,10 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
 
         jMov.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jMov.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Compra", "Venda" }));
-        jMov.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMovatualizaInterface(evt);
-            }
-        });
         jPanel2.add(jMov, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
 
         jTemContMov.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemContMov.setText("Contra Mov.");
-        jTemContMov.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTemContMovatualizaInterface(evt);
-            }
-        });
         jPanel2.add(jTemContMov, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -262,11 +210,6 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
 
         jTemDelta.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTemDelta.setText("Delta");
-        jTemDelta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
         jPanel2.add(jTemDelta, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -277,9 +220,9 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(botaoGerRisco, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botaoExecutar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(botaoAbortar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -293,92 +236,38 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(botaoGerRisco)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
+                        .addComponent(botaoExecutar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(botaoAbortar)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
-            IG.textoLimpa();
-            IG.progressoCompletoReseta();
-            IG.configuraGerais();
-            IG.setNomeSimulacao("Extremos Dia Anterior");
-            configuraEstrategia();
-            t1 = new Thread(() -> {
-                jButton1.setEnabled(false);
-                executaSimulacao();
-                jButton1.setEnabled(true);
-            });
-              t1.start();
-        }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Campo de texto contém erro");
-            IG.textoAdd("erro: " + e.getMessage() + "\n");
-            IG.textoAdd("Verifique os valores e tente novamente");
-            jButton1.setEnabled(true);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void botaoExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExecutarActionPerformed
+        cliqueBotaoExecutar(new ExtremosDiaAnterior(), botaoExecutar, botaoAbortar, botaoGerRisco, null);
+    }//GEN-LAST:event_botaoExecutarActionPerformed
 
-    private void atualizaInterface(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atualizaInterface
-        verificaConfigRelatorios();
-        verificaConfigValores();
-        verificaDados();
-        try{
-            IG_GerRisco.verificaInterface();
-        }catch(NullPointerException e){
-            System.out.println("nao iniciado");
-        }
-    }//GEN-LAST:event_atualizaInterface
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        IG.aborta(jButton1, t1);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void botaoAbortarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAbortarActionPerformed
+        cliqueBotaoAbortar();
+    }//GEN-LAST:event_botaoAbortarActionPerformed
 
     private void close(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_close
-        threadTimer.stop();
-        IG.aborta(jButton1, t1);
-        IG.setPodeAbrirSimulacao(true);
+        cliqueBotaoFechar();
     }//GEN-LAST:event_close
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new IG_GerRisco().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jMovatualizaInterface(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMovatualizaInterface
-        verificaConfigRelatorios();
-        verificaDados();
-        try{
-            IG_GerRisco.verificaInterface();
-        }catch(NullPointerException e){
-            System.out.println("nao iniciado");
-        }
-    }//GEN-LAST:event_jMovatualizaInterface
-
-    private void jTemContMovatualizaInterface(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTemContMovatualizaInterface
-        verificaConfigRelatorios();
-        verificaDados();
-        try{
-            IG_GerRisco.verificaInterface();
-        }catch(NullPointerException e){
-            System.out.println("nao iniciado");
-        }
-    }//GEN-LAST:event_jTemContMovatualizaInterface
-
-    private void mouse(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mouse
-        verificaConfigValores();
-    }//GEN-LAST:event_mouse
+    private void botaoGerRiscoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoGerRiscoActionPerformed
+        cliqueBotaoGerRisco();
+    }//GEN-LAST:event_botaoGerRiscoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton botaoAbortar;
+    public static javax.swing.JButton botaoExecutar;
+    public static javax.swing.JButton botaoGerRisco;
     private javax.swing.ButtonGroup buttonGroup1;
-    public static javax.swing.JButton jButton1;
-    public static javax.swing.JButton jButton2;
-    public static javax.swing.JButton jButton3;
     private javax.swing.JFormattedTextField jDelta;
     private javax.swing.JFormattedTextField jDeltaFin;
     private javax.swing.JFormattedTextField jGain;
@@ -405,21 +294,43 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
     private javax.swing.JCheckBox jTemLoss;
     // End of variables declaration//GEN-END:variables
 
-    private void verificaConfigRelatorios() {                                
-        IG.setTemRelCompletoDiario(jRelatorioCompleto.isSelected());
-        IG_GerRisco.recebeTipoRelatorio(jRelatorioCompleto);
-    }                               
-        
-    public static void botaoExec(boolean clicavel){
-        jButton1.setEnabled(clicavel);
+    @Override
+    public void abreinterface() {
+        initComponents();
+        super.abreinterface();
     }
-    
-    /**
-     * VERIFICA SE ESTRATEGIA ESTÁ EM USO (COL 0)
-     */
-    private void verificaConfigValores(){
-        verificaDados();
+
+    @Override
+    protected void getVariaveisDaInterfaceDaSimulacao() {
+        temCompleto = jRelatorioCompleto.isSelected();
         
+        passoDelta = Double.parseDouble(jPassoDelta.getText().replace(",", "."));
+        passoGain = Double.parseDouble(jPassoGain.getText().replace(",", "."));
+        passoLoss = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
+        
+        temDelta = jTemDelta.isSelected();
+        temAlvo = jTemGain.isSelected();
+        temStop = jTemLoss.isSelected();
+        temContMov = jTemContMov.isSelected();
+        
+        pos = Integer.parseInt(jPos.getText().replace(",", "."));
+        
+        delta = Double.parseDouble(jDelta.getText().replace(",", "."));
+        deltaFin = Double.parseDouble(jDeltaFin.getText().replace(",", "."));
+        g = Double.parseDouble(jGain.getText().replace(",", "."));
+        gFin = Double.parseDouble(jGainFin.getText().replace(",", "."));
+        l = Double.parseDouble(jLoss.getText().replace(",", "."));
+        lFin = Double.parseDouble(jLossFin.getText().replace(",", "."));
+
+        mov = switch (jMov.getSelectedIndex()){
+            case 0 -> LadoOrdem.COMPRA;
+
+            default -> LadoOrdem.VENDA;
+        };
+    }
+
+    @Override
+    protected void atualizaInterface() {
         jDelta.setEnabled(jTemDelta.isSelected());
         jDeltaFin.setEnabled(jTemDelta.isSelected() && jRelatorioCompleto.isSelected());
         jPassoDelta.setEnabled(jTemDelta.isSelected() && jRelatorioCompleto.isSelected());
@@ -434,83 +345,15 @@ public class IG_Sim_ExtremosDiaAnterior extends javax.swing.JFrame {
         jLossFin.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
         jPassoLoss.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
         jLabel7.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
+        
+        IG.setTemRelCompletoDiario(jRelatorioCompleto.isSelected());
+        IG_GerRisco.recebeTipoRelatorio(jRelatorioCompleto);
+        
+        botaoExecutar.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular());
     }
-    
-    /**
-     * Prepara a planilha colocando os valores FALSE em todos checkbox.
-     * Rodar uma unica vez
-     */
-    
-    private void verificaDados(){
-        jButton1.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular());
-    }
-    
-    private void executaSimulacao(){
-        Sim_ExtremosDiaAnterior simulacao = new Sim_ExtremosDiaAnterior(false);
-        if(jRelatorioDetalhado.isSelected())
-            new Relatorios().detalhado(simulacao);
-        else
-            new Relatorios().completo(simulacao);
-    }
-    
-    private void configuraEstrategia() throws NumberFormatException {
-        boolean
-        temCompleto = jRelatorioCompleto.isSelected();
-        
-        double
-        passoDelta = Double.parseDouble(jPassoDelta.getText().replace(",", ".")),
-        passoOffset = 1,
-        passoLimOp = 1,
-        passoGain = Double.parseDouble(jPassoGain.getText().replace(",", ".")),
-        passoLoss = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
-        
-        ConfigOrdens.configuraCompleto(temCompleto);
-        
-        //INICIA VARREDURA DA LISTA
-        boolean 
-        atualQtde = false,
-        temDelta = jTemDelta.isSelected(),
-        temOffset = false,
-        temLimOp = false,
-        temAlvo = jTemGain.isSelected(),
-        temStop = jTemLoss.isSelected(),
-        temContMov = jTemContMov.isSelected();
-        
-        int 
-        pos = Integer.parseInt(jPos.getText().replace(",", ".")),
-        posMax = 1,
-        posMaxFin = 1,
-        passoPos = 1;
-        
-        double
-        delta = Double.parseDouble(jDelta.getText().replace(",", ".")),
-        deltaFin = Double.parseDouble(jDeltaFin.getText().replace(",", ".")),
-        e = 0, eFin = 0,
-        lim = 0, limFin = 0,
-        g = Double.parseDouble(jGain.getText().replace(",", ".")),
-        gFin = Double.parseDouble(jGainFin.getText().replace(",", ".")),
-        l = Double.parseDouble(jLoss.getText().replace(",", ".")),
-        lFin = Double.parseDouble(jLossFin.getText().replace(",", "."));
 
-        LadoOrdem mov;
-        switch (jMov.getSelectedIndex()){
-            case 0:
-                mov = LadoOrdem.COMPRA;
-                break;
-    
-            case 1: 
-                mov = LadoOrdem.VENDA;
-                break;
-                
-            default:
-                mov = LadoOrdem.INDEF;
-                break;
-        }
-        
-        ConfigOrdens.setBooleans(temDelta, temLimOp, temOffset, temAlvo, temStop, temContMov, atualQtde);
-        ConfigOrdens.setBase(mov, pos, posMax, posMaxFin);
-        ConfigOrdens.setEstrategiaLoop(delta, deltaFin, lim, limFin, e, eFin, g, gFin, l, lFin);
-        ConfigOrdens.setPasso(passoPos, passoDelta, passoOffset, passoLimOp, passoGain, passoLoss);
-        ConfigOrdens.limpaConfigTrStop();
+    @Override
+    public String getNome() {
+        return "Extremos Dia Anterior";
     }
 }

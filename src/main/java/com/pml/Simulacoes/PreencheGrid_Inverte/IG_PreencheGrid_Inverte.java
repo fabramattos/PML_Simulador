@@ -1,643 +1,369 @@
-package com.pml.InterfaceGrafica;
+package com.pml.Simulacoes.PreencheGrid_Inverte;
 
-import javax.swing.JOptionPane;
-import com.pml.simulacao.Candle;
-import com.pml.Configuracoes.ConfigOrdens;
-import static com.pml.InterfaceGrafica.IG.setPodeAbrirSimulacao;
-import com.pml.Resumos.Relatorios;
+import com.pml.Simulacoes.AberturaCompleto.*;
+import com.pml.InterfaceGrafica.IG;
+import com.pml.InterfaceGrafica.IG_GerRisco;
 import com.pml.Ordens.LadoOrdem;
-import com.pml.Simulacoes.Sim_AberturaCompleto;
+import com.pml.Simulacoes.IG_InterfaceSimulacao;
 
 /**
  *
  * @author fabra
  */
-public class IG_Sim_AberturaCompleto extends javax.swing.JFrame {
+public class IG_PreencheGrid_Inverte extends IG_InterfaceSimulacao {
 
-    Thread t1, threadTimer;
-    double maxContador = 1;
-    
-    /**
-     * Creates new form IG_UE
-     */
-    public IG_Sim_AberturaCompleto(){
-        initComponents();
-        IG_GerRisco.resetPodeSimular();
-        IG.setPodeAbrirSimulacao(false);
-        threadTimer = new Thread(() -> {
-            while(true){
-                if(!jButton1.isEnabled()){
-                    try {
-                        verificaDados();
-                        verificaConfigRelatorios();
-                        verificaDados();
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {}
-                }
-            }
-        });
-        threadTimer.start();
+    public IG_PreencheGrid_Inverte() {
     }
-    
-    
+
+    @Override
+    public void abreinterface() {
+        initComponents();
+        super.abreinterface();
+    }
+
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jButton1 = new javax.swing.JButton();
+        botaoExecutar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jRelatorioDetalhado = new javax.swing.JRadioButton();
         jRelatorioCompleto = new javax.swing.JRadioButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jLabel13 = new javax.swing.JLabel();
-        jPassoLimOp = new javax.swing.JFormattedTextField();
-        jLimOp = new javax.swing.JFormattedTextField();
-        jGain = new javax.swing.JFormattedTextField();
-        jLossFin = new javax.swing.JFormattedTextField();
-        jLabel7 = new javax.swing.JLabel();
-        jGainFin = new javax.swing.JFormattedTextField();
-        jLabel8 = new javax.swing.JLabel();
-        jPassoLoss = new javax.swing.JFormattedTextField();
-        jPassoGain = new javax.swing.JFormattedTextField();
-        jPos = new javax.swing.JFormattedTextField();
-        jOffset = new javax.swing.JFormattedTextField();
-        jLoss = new javax.swing.JFormattedTextField();
-        jOffsetFin = new javax.swing.JFormattedTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jPassoOffset = new javax.swing.JFormattedTextField();
+        botaoAbortar = new javax.swing.JButton();
+        botaoGerRisco = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLimOpFin = new javax.swing.JFormattedTextField();
-        jTemContMov = new javax.swing.JCheckBox();
-        jLabel11 = new javax.swing.JLabel();
-        jTemOffset = new javax.swing.JCheckBox();
-        jTemLimOp = new javax.swing.JCheckBox();
-        jTemGain = new javax.swing.JCheckBox();
-        jTemLoss = new javax.swing.JCheckBox();
+        jPos = new javax.swing.JFormattedTextField();
         jMov = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jPosMax = new javax.swing.JFormattedTextField();
         jPosMaxFin = new javax.swing.JFormattedTextField();
+        jDeltaFin = new javax.swing.JFormattedTextField();
         jLabel5 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
         jPassoPosMax = new javax.swing.JFormattedTextField();
+        jPassoDelta = new javax.swing.JFormattedTextField();
+        jPassoOffset = new javax.swing.JFormattedTextField();
+        jPosInverte = new javax.swing.JFormattedTextField();
+        jPosInverteFin = new javax.swing.JFormattedTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jPassoLoss = new javax.swing.JFormattedTextField();
+        jOffsetFin = new javax.swing.JFormattedTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jOffset = new javax.swing.JFormattedTextField();
+        jDelta = new javax.swing.JFormattedTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("DayTrade: Abertura Completo");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 close(evt);
             }
         });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton1.setText("Executar");
-        jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        botaoExecutar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoExecutar.setText("Executar");
+        botaoExecutar.setEnabled(false);
+        botaoExecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                botaoExecutarActionPerformed(evt);
             }
         });
+        getContentPane().add(botaoExecutar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 102, -1));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Relatórios:", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
         jPanel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 
         buttonGroup1.add(jRelatorioDetalhado);
         jRelatorioDetalhado.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jRelatorioDetalhado.setSelected(true);
         jRelatorioDetalhado.setText("Detalhado");
-        jRelatorioDetalhado.setEnabled(false);
-        jRelatorioDetalhado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         buttonGroup1.add(jRelatorioCompleto);
         jRelatorioCompleto.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jRelatorioCompleto.setSelected(true);
         jRelatorioCompleto.setText("Completo");
-        jRelatorioCompleto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jRelatorioDetalhado)
-                .addGap(18, 18, 18)
-                .addComponent(jRelatorioCompleto)
-                .addGap(205, 205, 205))
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRelatorioDetalhado)
+                    .addComponent(jRelatorioCompleto))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRelatorioDetalhado)
-                    .addComponent(jRelatorioCompleto))
+                .addComponent(jRelatorioDetalhado)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRelatorioCompleto)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton2.setText("Abortar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        botaoAbortar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoAbortar.setText("Abortar");
+        botaoAbortar.setEnabled(false);
+        botaoAbortar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                botaoAbortarActionPerformed(evt);
             }
         });
+        getContentPane().add(botaoAbortar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 102, -1));
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton3.setText("Ger. Risco");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        botaoGerRisco.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoGerRisco.setText("Ger. Risco");
+        botaoGerRisco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                botaoGerRiscoActionPerformed(evt);
             }
         });
+        getContentPane().add(botaoGerRisco, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 102, -1));
 
-        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel13.setText("Lim Op Fin");
-        jLabel13.setEnabled(false);
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Configurações", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
+        jPanel4.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPassoLimOp.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jPassoLimOp.setText("1");
-        jPassoLimOp.setToolTipText("");
-        jPassoLimOp.setEnabled(false);
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel3.setText("Ordem Inicial:");
+        jPanel4.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 27, -1, -1));
 
-        jLimOp.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jLimOp.setText("1");
-        jLimOp.setEnabled(false);
+        jPos.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jPos.setText("1");
+        jPanel4.add(jPos, new org.netbeans.lib.awtextra.AbsoluteConstraints(104, 23, 50, -1));
 
-        jGain.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jGain.setText("1");
-        jGain.setEnabled(false);
+        jMov.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jMov.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Compra", "Venda" }));
+        jPanel4.add(jMov, new org.netbeans.lib.awtextra.AbsoluteConstraints(173, 24, -1, -1));
 
-        jLossFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jLossFin.setText("1");
-        jLossFin.setToolTipText("");
-        jLossFin.setEnabled(false);
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel4.setText("Pos Max:");
+        jPanel4.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 77, -1, -1));
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel7.setText("Loss Fin");
-        jLabel7.setEnabled(false);
+        jPosMax.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jPosMax.setText("1");
+        jPanel4.add(jPosMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 73, 50, -1));
 
-        jGainFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jGainFin.setText("1");
-        jGainFin.setEnabled(false);
+        jPosMaxFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jPosMaxFin.setText("1");
+        jPosMaxFin.setEnabled(false);
+        jPanel4.add(jPosMaxFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(173, 73, 50, -1));
+
+        jDeltaFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jDeltaFin.setText("1");
+        jDeltaFin.setEnabled(false);
+        jPanel4.add(jDeltaFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(173, 157, 50, -1));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel5.setText("Pos Max Fin");
+        jLabel5.setEnabled(false);
+        jPanel4.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(229, 77, -1, -1));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel8.setText("Gain Fin");
         jLabel8.setEnabled(false);
-
-        jPassoLoss.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jPassoLoss.setText("1");
-        jPassoLoss.setToolTipText("");
-        jPassoLoss.setEnabled(false);
-
-        jPassoGain.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jPassoGain.setText("1");
-        jPassoGain.setToolTipText("");
-        jPassoGain.setEnabled(false);
-
-        jPos.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jPos.setText("1");
-
-        jOffset.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jOffset.setText("1");
-        jOffset.setEnabled(false);
-
-        jLoss.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jLoss.setText("1");
-        jLoss.setToolTipText("");
-        jLoss.setEnabled(false);
-
-        jOffsetFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jOffsetFin.setText("1");
-        jOffsetFin.setEnabled(false);
-
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel6.setText("Offset Fin");
-        jLabel6.setEnabled(false);
-
-        jPassoOffset.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        jPassoOffset.setText("1");
-        jPassoOffset.setToolTipText("");
-        jPassoOffset.setEnabled(false);
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel3.setText("Qtde");
-
-        jLimOpFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jLimOpFin.setText("1");
-        jLimOpFin.setEnabled(false);
-
-        jTemContMov.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jTemContMov.setText("Contra Mov.");
-        jTemContMov.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
-
-        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel11.setText("Passo:");
-
-        jTemOffset.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jTemOffset.setText("Offset");
-        jTemOffset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
-
-        jTemLimOp.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jTemLimOp.setText("Lim Op");
-        jTemLimOp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
-
-        jTemGain.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jTemGain.setText("Gain");
-        jTemGain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
-
-        jTemLoss.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jTemLoss.setText("Loss");
-        jTemLoss.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
-
-        jMov.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jMov.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Compra", "Venda" }));
-        jMov.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel4.setText("Qtde Max");
-
-        jPosMax.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jPosMax.setText("1");
-
-        jPosMaxFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jPosMaxFin.setText("1");
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel5.setText("Qtde Max Fin");
+        jPanel4.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(229, 161, -1, -1));
 
         jPassoPosMax.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         jPassoPosMax.setText("1");
         jPassoPosMax.setToolTipText("");
+        jPassoPosMax.setEnabled(false);
+        jPanel4.add(jPassoPosMax, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 70, 50, -1));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 368, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jMov, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTemContMov))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel3)
-                                            .addComponent(jLabel4))
-                                        .addGap(28, 28, 28)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jPosMax, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jPosMaxFin, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel5))
-                                            .addComponent(jPos, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jTemOffset)
-                                            .addComponent(jTemLimOp)
-                                            .addComponent(jTemGain)
-                                            .addComponent(jTemLoss))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLoss, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jLossFin, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jOffset, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jOffsetFin, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jGain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jGainFin, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLimOp, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jLimOpFin, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel7)
-                                            .addComponent(jLabel13)
-                                            .addComponent(jLabel8)
-                                            .addComponent(jLabel6))))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPassoLimOp, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPassoOffset, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPassoGain, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPassoLoss, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jPassoPosMax, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jButton3))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jMov, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTemContMov))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jPos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jPosMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(jPosMaxFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5)
-                            .addComponent(jPassoPosMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jOffset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jOffsetFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTemOffset)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLimOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLimOpFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTemLimOp)
-                            .addComponent(jLabel13))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jGain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jGainFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTemGain)
-                            .addComponent(jLabel8))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLoss, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLossFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTemLoss)
-                            .addComponent(jLabel7)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addGap(41, 41, 41)
-                        .addComponent(jPassoOffset, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPassoLimOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPassoGain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPassoLoss, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPassoDelta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jPassoDelta.setText("1");
+        jPassoDelta.setToolTipText("");
+        jPassoDelta.setEnabled(false);
+        jPanel4.add(jPassoDelta, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 160, 50, 20));
+
+        jPassoOffset.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jPassoOffset.setText("1");
+        jPassoOffset.setToolTipText("");
+        jPassoOffset.setEnabled(false);
+        jPanel4.add(jPassoOffset, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 130, 50, 20));
+
+        jPosInverte.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jPosInverte.setText("1");
+        jPanel4.add(jPosInverte, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 101, 50, -1));
+
+        jPosInverteFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jPosInverteFin.setText("1");
+        jPosInverteFin.setEnabled(false);
+        jPanel4.add(jPosInverteFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(173, 101, 50, -1));
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel6.setText("Pós Inv. Fin");
+        jLabel6.setEnabled(false);
+        jPanel4.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(229, 105, -1, -1));
+
+        jPassoLoss.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jPassoLoss.setText("1");
+        jPassoLoss.setToolTipText("");
+        jPassoLoss.setEnabled(false);
+        jPanel4.add(jPassoLoss, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 100, 50, 20));
+
+        jOffsetFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jOffsetFin.setText("1");
+        jOffsetFin.setEnabled(false);
+        jPanel4.add(jOffsetFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(173, 129, 50, -1));
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel11.setText("Passo:");
+        jPanel4.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 50, -1, -1));
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel13.setText("Lim Op Fin");
+        jLabel13.setEnabled(false);
+        jPanel4.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(229, 133, -1, -1));
+
+        jOffset.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jOffset.setText("1");
+        jPanel4.add(jOffset, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 129, 50, -1));
+
+        jDelta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jDelta.setText("1");
+        jPanel4.add(jDelta, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 157, 50, -1));
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel9.setText("Pós Inversao:");
+        jPanel4.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 105, -1, -1));
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel10.setText("Offset:");
+        jPanel4.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 133, -1, -1));
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel12.setText("Delta:");
+        jPanel4.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 161, -1, -1));
+
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 10, 380, 200));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
-            IG.textoLimpa();
-            IG.progressoCompletoReseta();
-            IG.configuraGerais();
-            IG.setNomeSimulacao("Abertura Completo");
-            configuraEstrategia();
-            t1 = new Thread(() -> {
-                jButton1.setEnabled(false);
-                executaSimulacao();
-                jButton1.setEnabled(true);
-            });
-            t1.start();
-        }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Campo de texto contém erro");
-            IG.textoAdd("erro: " + e.getMessage() + "\n");
-            IG.textoAdd("Verifique os valores e tente novamente\n");
-            jButton1.setEnabled(true);
-        }catch(OutOfMemoryError e){
-            IG.textoAdd("Sem memória o suficiente. Processo cancelado.\n");
-            botaoExec(true);
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(this, "Campo de texto contém erro");
-            botaoExec(true);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void botaoExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExecutarActionPerformed
+        cliqueBotaoExecutar(new AberturaCompleto(), botaoExecutar, botaoAbortar, botaoGerRisco, null);
+    }//GEN-LAST:event_botaoExecutarActionPerformed
 
-    private void atualizaInterface(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atualizaInterface
-        verificaConfigRelatorios();
-        verificaDados();
-        try{
-            IG_GerRisco.verificaInterface();
-        }catch(NullPointerException e){
-            System.out.println("nao iniciado");
-        }
-    }//GEN-LAST:event_atualizaInterface
+    private void botaoAbortarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAbortarActionPerformed
+        cliqueBotaoAbortar();
+    }//GEN-LAST:event_botaoAbortarActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        IG.aborta(jButton1, t1);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new IG_GerRisco().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void botaoGerRiscoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoGerRiscoActionPerformed
+        cliqueBotaoGerRisco();
+    }//GEN-LAST:event_botaoGerRiscoActionPerformed
 
     private void close(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_close
-        threadTimer.stop();
-        IG.aborta(jButton1, t1);
-        setPodeAbrirSimulacao(true);
+        cliqueBotaoFechar();
     }//GEN-LAST:event_close
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton botaoAbortar;
+    public static javax.swing.JButton botaoExecutar;
+    public static javax.swing.JButton botaoGerRisco;
     private javax.swing.ButtonGroup buttonGroup1;
-    public static javax.swing.JButton jButton1;
-    public static javax.swing.JButton jButton2;
-    public static javax.swing.JButton jButton3;
-    private javax.swing.JFormattedTextField jGain;
-    private javax.swing.JFormattedTextField jGainFin;
+    private javax.swing.JFormattedTextField jDelta;
+    private javax.swing.JFormattedTextField jDeltaFin;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JFormattedTextField jLimOp;
-    private javax.swing.JFormattedTextField jLimOpFin;
-    private javax.swing.JFormattedTextField jLoss;
-    private javax.swing.JFormattedTextField jLossFin;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JComboBox<String> jMov;
     private javax.swing.JFormattedTextField jOffset;
     private javax.swing.JFormattedTextField jOffsetFin;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JFormattedTextField jPassoGain;
-    private javax.swing.JFormattedTextField jPassoLimOp;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JFormattedTextField jPassoDelta;
     private javax.swing.JFormattedTextField jPassoLoss;
     private javax.swing.JFormattedTextField jPassoOffset;
     private javax.swing.JFormattedTextField jPassoPosMax;
     private javax.swing.JFormattedTextField jPos;
+    private javax.swing.JFormattedTextField jPosInverte;
+    private javax.swing.JFormattedTextField jPosInverteFin;
     private javax.swing.JFormattedTextField jPosMax;
     private javax.swing.JFormattedTextField jPosMaxFin;
     private javax.swing.JRadioButton jRelatorioCompleto;
     private javax.swing.JRadioButton jRelatorioDetalhado;
-    private javax.swing.JCheckBox jTemContMov;
-    private javax.swing.JCheckBox jTemGain;
-    private javax.swing.JCheckBox jTemLimOp;
-    private javax.swing.JCheckBox jTemLoss;
-    private javax.swing.JCheckBox jTemOffset;
     // End of variables declaration//GEN-END:variables
 
-    private void verificaConfigRelatorios() {                                
+
+    @Override
+    protected void atualizaInterface() {
         IG.setTemRelCompletoDiario(jRelatorioCompleto.isSelected());
         IG_GerRisco.recebeTipoRelatorio(jRelatorioCompleto);
-    }                               
         
-    public static void botaoExec(boolean clicavel){
-        jButton1.setEnabled(clicavel);
+        jPosMaxFin.setEnabled(jRelatorioCompleto.isSelected());
+        jPassoPosMax.setEnabled(jRelatorioCompleto.isSelected());
+        jLabel13.setEnabled(jRelatorioCompleto.isSelected());
+        
+        jOffsetFin.setEnabled(jRelatorioCompleto.isSelected());
+        jPassoOffset.setEnabled(jRelatorioCompleto.isSelected());
+        jLabel8.setEnabled(jRelatorioCompleto.isSelected());
+        
+        jPosInverteFin.setEnabled(jRelatorioCompleto.isSelected());
+        jPassoLoss.setEnabled(jRelatorioCompleto.isSelected());
+        jLabel6.setEnabled(jRelatorioCompleto.isSelected());
+        
+        jDeltaFin.setEnabled(jRelatorioCompleto.isSelected());
+        jPassoDelta.setEnabled(jRelatorioCompleto.isSelected());
+        jLabel9.setEnabled(jRelatorioCompleto.isSelected());
     }
     
-    private void verificaDados(){
-        jButton1.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular());
-        
-        jOffset.setEnabled(jTemOffset.isSelected());
-        jOffsetFin.setEnabled(jTemOffset.isSelected() && jRelatorioCompleto.isSelected());
-        jPassoOffset.setEnabled(jTemOffset.isSelected() && jRelatorioCompleto.isSelected());
-        jLabel6.setEnabled(jTemOffset.isSelected() && jRelatorioCompleto.isSelected());
-        
-        jLimOp.setEnabled(jTemLimOp.isSelected());
-        jLimOpFin.setEnabled(jTemLimOp.isSelected() && jRelatorioCompleto.isSelected());
-        jPassoLimOp.setEnabled(jTemLimOp.isSelected() && jRelatorioCompleto.isSelected());
-        jLabel13.setEnabled(jTemLimOp.isSelected() && jRelatorioCompleto.isSelected());
-        
-        jGain.setEnabled(jTemGain.isSelected());
-        jGainFin.setEnabled(jTemGain.isSelected() && jRelatorioCompleto.isSelected());
-        jPassoGain.setEnabled(jTemGain.isSelected() && jRelatorioCompleto.isSelected());
-        jLabel8.setEnabled(jTemGain.isSelected() && jRelatorioCompleto.isSelected());
-        
-        jLoss.setEnabled(jTemLoss.isSelected());
-        jLossFin.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
-        jPassoLoss.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
-        jLabel7.setEnabled(jTemLoss.isSelected() && jRelatorioCompleto.isSelected());
-        
-    }
-    
-    private void executaSimulacao(){
-        if(jRelatorioDetalhado.isSelected())
-            new Relatorios().detalhado(new Sim_AberturaCompleto(false));
-        else
-            new Relatorios().completo(new Sim_AberturaCompleto(false));
-    }
-    
-    private void configuraEstrategia() throws NumberFormatException {
-        boolean
+    @Override
+    protected void getVariaveisDaInterfaceDaSimulacao() {
+         // LOSS É A POSIÇÃO APOS INVERSAO
         temCompleto = jRelatorioCompleto.isSelected();
         
-        double
-        passoDelta = 1,
-        passoOffset = Double.parseDouble(jPassoOffset.getText().replace(",", ".")),
-        passoLimOp = Double.parseDouble(jPassoLimOp.getText().replace(",", ".")),
-        passoGain = Double.parseDouble(jPassoGain.getText().replace(",", ".")),
+        passoDelta = Double.parseDouble(jPassoDelta.getText().replace(",", "."));
+        passoOffset = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
         passoLoss = Double.parseDouble(jPassoLoss.getText().replace(",", "."));
         
-        ConfigOrdens.configuraCompleto(temCompleto);
+        atualQtde = true;
+        temDelta = true;
+        temOffset = true;
+        temStop = true; //RETIRAR A VERIFICAÇÃO NA SIMULAÇÃO, USAR APENAS PARA TER OS DADOS REGISTRADOS
         
-        //INICIA VARREDURA DA LISTA
-        boolean 
-        atualQtde = false,
-        temDelta = false,
-        temOffset = jTemOffset.isSelected(),
-        temLimOp = jTemLimOp.isSelected(),
-        temAlvo = jTemGain.isSelected(),
-        temStop = jTemLoss.isSelected(),
-        temContMov = jTemContMov.isSelected();
-        
-        int 
-        pos = Integer.parseInt(jPos.getText().replace(",", ".")),
-        posMax = Integer.parseInt(jPosMax.getText().replace(",", ".")),
-        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", ".")),
+        pos = Integer.parseInt(jPos.getText().replace(",", "."));
+        posMax = Integer.parseInt(jPosMax.getText().replace(",", "."));
+        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", "."));
         passoPos = Integer.parseInt(jPassoPosMax.getText().replace(",", "."));
         
-        double
-        delta = 0, deltaFin = 0,
-        e = Double.parseDouble(jOffset.getText().replace(",", ".")),
-        eFin = Double.parseDouble(jOffsetFin.getText().replace(",", ".")),
-        lim = Double.parseDouble(jLimOp.getText().replace(",", ".")),
-        limFin = Double.parseDouble(jLimOpFin.getText().replace(",", ".")),
-        g = Double.parseDouble(jGain.getText().replace(",", ".")),
-        gFin = Double.parseDouble(jGainFin.getText().replace(",", ".")),
-        l = Double.parseDouble(jLoss.getText().replace(",", ".")),
-        lFin = Double.parseDouble(jLossFin.getText().replace(",", "."));
-        
-        LadoOrdem mov;
-        switch (jMov.getSelectedIndex()){
-            case 0:
-                mov = LadoOrdem.COMPRA;
-                break;
-    
-            case 1: 
-                mov = LadoOrdem.VENDA;
-                break;
-                
-            default:
-                mov = LadoOrdem.INDEF;
-                break;
-        }
-            
+        delta = Double.parseDouble(jDelta.getText().replace(",", "."));
+        deltaFin = Double.parseDouble(jDeltaFin.getText().replace(",", "."));
+        e = Double.parseDouble(jOffset.getText().replace(",", "."));
+        eFin = Double.parseDouble(jOffsetFin.getText().replace(",", "."));
+        l =  Double.parseDouble(jPosInverte.getText().replace(",", "."));
+        lFin =  Double.parseDouble(jPosInverteFin.getText().replace(",", "."));
 
-        ConfigOrdens.setBooleans(temDelta, temLimOp, temOffset, temAlvo, temStop, temContMov, atualQtde);
-        ConfigOrdens.setBase(mov, pos, posMax, posMaxFin);
-        ConfigOrdens.setEstrategiaLoop(delta, deltaFin, lim, limFin, e, eFin, g, gFin, l, lFin);
-        ConfigOrdens.setPasso(passoPos, passoDelta, passoOffset, passoLimOp, passoGain, passoLoss);
-        ConfigOrdens.limpaConfigTrStop();
+        mov = switch (jMov.getSelectedIndex()){
+            default -> LadoOrdem.COMPRA;
+            case 1 -> LadoOrdem.VENDA;
+        };
     }
     
+    
+
+@Override
+public String getNome() {
+        return "Preenche Grid Inverte";
+    }
+
+
 }

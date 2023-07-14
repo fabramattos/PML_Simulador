@@ -4,13 +4,15 @@
 package com.pml.Ordens;
 
 import com.pml.Configuracoes.ConfigOrdens;
-import com.pml.Resumos.Relatorios;
-import com.pml.simulacao.Arredondamento;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Arredondamento;
+import com.pml.infra.Candle;
 import com.pml.Resumos.ResumoDia;
 
 public class OrdemOCO extends OrdemSimples{
     
+    /**
+     * Ordem criada baseada nas variáveis da interface da simulaçõe
+     */
     public OrdemOCO(){
         super();
         

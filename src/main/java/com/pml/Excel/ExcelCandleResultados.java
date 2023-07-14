@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 import com.pml.Resumos.Relatorios;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 

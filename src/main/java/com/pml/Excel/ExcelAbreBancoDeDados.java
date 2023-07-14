@@ -23,7 +23,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 
 /**
  * @author Felipe Mattos

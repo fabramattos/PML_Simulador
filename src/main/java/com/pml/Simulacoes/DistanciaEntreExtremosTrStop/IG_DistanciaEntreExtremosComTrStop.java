@@ -1,40 +1,19 @@
-package com.pml.InterfaceGrafica;
+package com.pml.Simulacoes.DistanciaEntreExtremosTrStop;
 
-import javax.swing.JOptionPane;
-import com.pml.simulacao.Candle;
+import com.pml.infra.Candle;
 import com.pml.Configuracoes.ConfigOrdens;
-import com.pml.Resumos.Relatorios;
-import com.pml.Ordens.LadoOrdem;
-import com.pml.Simulacoes.Sim_SuporteEResistenciaTrStop;
+import com.pml.InterfaceGrafica.IG;
+import com.pml.InterfaceGrafica.IG_GerRisco;
+import com.pml.InterfaceGrafica.IG_TrStop;
+import com.pml.Simulacoes.IG_InterfaceSimulacao;
 
 /**
  *
  * @author fabra
  */
-public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
+public class IG_DistanciaEntreExtremosComTrStop extends IG_InterfaceSimulacao {
 
-    Thread t1, threadTimer;
-    String nomeArq;
-    
-    /**
-     * Creates new form IG_UE
-     */
-    public IG_Sim_SuporteEResistenciaTrStop() {
-        initComponents();
-        IG.setPodeAbrirSimulacao(false);
-        IG_GerRisco.resetPodeSimular();
-        IG_TrStop.resetPodeSimular();
-        threadTimer = new Thread(() -> {
-            while(this.isVisible()){
-                try {
-                    verificaDados();
-                    verificaConfigRelatorios();
-                    verificaConfigValores();
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {}
-            }
-        });
-        threadTimer.start();
+    public IG_DistanciaEntreExtremosComTrStop() {
     }
     
     
@@ -42,22 +21,22 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        jButton1 = new javax.swing.JButton();
+        botaoExecutar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jRelatorioDetalhado = new javax.swing.JRadioButton();
         jRelatorioCompleto = new javax.swing.JRadioButton();
-        jButton2 = new javax.swing.JButton();
+        botaoAbortar = new javax.swing.JButton();
         jPos = new javax.swing.JFormattedTextField();
         jLabel11 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jTemContMov = new javax.swing.JCheckBox();
-        jDelta = new javax.swing.JFormattedTextField();
-        jDeltaFin = new javax.swing.JFormattedTextField();
+        jLimTempo = new javax.swing.JFormattedTextField();
+        jLimTempoFin = new javax.swing.JFormattedTextField();
         jLabel12 = new javax.swing.JLabel();
-        jPassoDelta = new javax.swing.JFormattedTextField();
+        jPassoLimTempo = new javax.swing.JFormattedTextField();
         jLabel13 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        botaoGerRisco = new javax.swing.JButton();
+        botaoTrStop = new javax.swing.JButton();
         jOffset = new javax.swing.JFormattedTextField();
         jOffsetFin = new javax.swing.JFormattedTextField();
         jLabel14 = new javax.swing.JLabel();
@@ -72,11 +51,6 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DayTrade: Suporte E Resistencia TrStop");
         setResizable(false);
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                teste(evt);
-            }
-        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 close(evt);
@@ -84,15 +58,15 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton1.setText("Executar");
-        jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        botaoExecutar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoExecutar.setText("Executar");
+        botaoExecutar.setEnabled(false);
+        botaoExecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                botaoExecutarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 90, -1));
+        getContentPane().add(botaoExecutar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 90, -1));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Relatórios:", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 12))); // NOI18N
         jPanel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -101,20 +75,10 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
         jRelatorioDetalhado.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioDetalhado.setSelected(true);
         jRelatorioDetalhado.setText("Detalhado");
-        jRelatorioDetalhado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         buttonGroup1.add(jRelatorioCompleto);
         jRelatorioCompleto.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jRelatorioCompleto.setText("Completo");
-        jRelatorioCompleto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atualizaInterface(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -139,14 +103,14 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
 
         getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 340, 60));
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton2.setText("Abortar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        botaoAbortar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoAbortar.setText("Abortar");
+        botaoAbortar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                botaoAbortarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 340, 90, -1));
+        getContentPane().add(botaoAbortar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 340, 90, -1));
 
         jPos.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         jPos.setText("1");
@@ -164,47 +128,47 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
         jTemContMov.setText("Contra Mov.");
         getContentPane().add(jTemContMov, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
-        jDelta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jDelta.setText("1");
-        getContentPane().add(jDelta, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 200, 50, -1));
+        jLimTempo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jLimTempo.setText("1");
+        getContentPane().add(jLimTempo, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 200, 50, -1));
 
-        jDeltaFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
-        jDeltaFin.setText("1");
-        jDeltaFin.setEnabled(false);
-        getContentPane().add(jDeltaFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 200, 50, -1));
+        jLimTempoFin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jLimTempoFin.setText("1");
+        jLimTempoFin.setEnabled(false);
+        getContentPane().add(jLimTempoFin, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 200, 50, -1));
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel12.setText("Lim Tempo Fin");
         jLabel12.setEnabled(false);
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, -1, -1));
 
-        jPassoDelta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        jPassoDelta.setText("1");
-        jPassoDelta.setToolTipText("");
-        jPassoDelta.setEnabled(false);
-        getContentPane().add(jPassoDelta, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 200, 50, -1));
+        jPassoLimTempo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        jPassoLimTempo.setText("1");
+        jPassoLimTempo.setToolTipText("");
+        jPassoLimTempo.setEnabled(false);
+        getContentPane().add(jPassoLimTempo, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 200, 50, -1));
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel13.setText("Lim Tempo");
         getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, -1, -1));
 
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton3.setText("Ger. Risco");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        botaoGerRisco.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoGerRisco.setText("Ger. Risco");
+        botaoGerRisco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                botaoGerRiscoActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 90, -1));
+        getContentPane().add(botaoGerRisco, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 90, -1));
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jButton4.setText("Tr. Stop");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        botaoTrStop.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        botaoTrStop.setText("Tr. Stop");
+        botaoTrStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                botaoTrStopActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 90, -1));
+        getContentPane().add(botaoTrStop, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, 90, -1));
 
         jOffset.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
         jOffset.setText("1");
@@ -257,71 +221,39 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
-            IG.textoLimpa();
-            IG.progressoCompletoReseta();
-            IG.configuraGerais();
-            IG.setNomeSimulacao("Suporte e Resistencia Tr.Stop");
-            configuraEstrategia();
-            t1 = new Thread(() -> {
-                jButton1.setEnabled(false);
-                executaSimulacao();
-                jButton1.setEnabled(true);
-            });
-              t1.start();
-        }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Campo de texto contém erro");
-            IG.textoAdd("erro: " + e.getMessage() + "\n");
-            IG.textoAdd("Verifique os valores e tente novamente\n");
-            jButton1.setEnabled(true);
-        }catch(OutOfMemoryError e){
-                IG.textoAdd("Sem memória o suficiente. Processo cancelado.\n");
-                botaoExec(true);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    @Override
+    public void abreinterface() {
+        initComponents();
+        super.abreinterface();
+    }
+    
+    
+    private void botaoExecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoExecutarActionPerformed
+        cliqueBotaoExecutar(new DistanciaEntreExtremosComTrStop(), botaoExecutar, botaoAbortar, botaoGerRisco, botaoTrStop);
+    }//GEN-LAST:event_botaoExecutarActionPerformed
 
-    private void atualizaInterface(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atualizaInterface
-        verificaConfigRelatorios();
-        verificaConfigValores();
-        try{
-            IG_GerRisco.verificaInterface();
-        }catch(NullPointerException e){
-            System.out.println("nao iniciado");
-        }
-    }//GEN-LAST:event_atualizaInterface
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        IG.aborta(jButton1, t1);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void teste(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_teste
-        verificaConfigRelatorios();
-        verificaConfigValores();
-    }//GEN-LAST:event_teste
+    private void botaoAbortarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoAbortarActionPerformed
+        cliqueBotaoAbortar();
+    }//GEN-LAST:event_botaoAbortarActionPerformed
 
     private void close(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_close
-        threadTimer.stop();
-        IG.aborta(jButton1, t1);
-        IG.setPodeAbrirSimulacao(true);
+        cliqueBotaoFechar();
     }//GEN-LAST:event_close
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new IG_GerRisco().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void botaoGerRiscoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoGerRiscoActionPerformed
+        cliqueBotaoGerRisco();
+    }//GEN-LAST:event_botaoGerRiscoActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        new IG_TrStop().setVisible(true);
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void botaoTrStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoTrStopActionPerformed
+        cliqueBotaoTrStop();
+    }//GEN-LAST:event_botaoTrStopActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton botaoAbortar;
+    public static javax.swing.JButton botaoExecutar;
+    public static javax.swing.JButton botaoGerRisco;
+    public static javax.swing.JButton botaoTrStop;
     private javax.swing.ButtonGroup buttonGroup1;
-    public static javax.swing.JButton jButton1;
-    public static javax.swing.JButton jButton2;
-    public static javax.swing.JButton jButton3;
-    public static javax.swing.JButton jButton4;
-    private javax.swing.JFormattedTextField jDelta;
-    private javax.swing.JFormattedTextField jDeltaFin;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -330,10 +262,12 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JFormattedTextField jLimTempo;
+    private javax.swing.JFormattedTextField jLimTempoFin;
     private javax.swing.JFormattedTextField jOffset;
     private javax.swing.JFormattedTextField jOffsetFin;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JFormattedTextField jPassoDelta;
+    private javax.swing.JFormattedTextField jPassoLimTempo;
     private javax.swing.JFormattedTextField jPassoOffset;
     private javax.swing.JFormattedTextField jPassoPos;
     private javax.swing.JFormattedTextField jPos;
@@ -344,100 +278,61 @@ public class IG_Sim_SuporteEResistenciaTrStop extends javax.swing.JFrame {
     private javax.swing.JCheckBox jTemContMov;
     // End of variables declaration//GEN-END:variables
 
-    private void verificaConfigRelatorios() {                                
-        IG.setTemRelCompletoDiario(jRelatorioCompleto.isSelected());
-        IG_GerRisco.recebeTipoRelatorio(jRelatorioCompleto);
-        IG_TrStop.recebeTipoRelatorio(jRelatorioCompleto);
-    }                               
+    @Override
+    protected void getVariaveisDaInterfaceDaSimulacao() {
+        temCompleto = jRelatorioCompleto.isSelected();
         
-    public static void botaoExec(boolean clicavel){
-        jButton1.setEnabled(clicavel);
+        passoDelta = Double.parseDouble(jPassoLimTempo.getText().replace(",", "."));
+        passoOffset = Double.parseDouble(jPassoOffset.getText().replace(",", "."));
+        
+        atualQtde = true;
+        temDelta = true;
+        temOffset = true;
+        
+        temContMov = jTemContMov.isSelected();
+        
+        pos = Integer.parseInt(jPos.getText().replace(",", "."));
+        posMax = Integer.parseInt(jPosMax.getText().replace(",", "."));
+        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", "."));
+        passoPos = Integer.parseInt(jPassoPos.getText().replace(",", "."));
+        
+        delta = Double.parseDouble(jLimTempo.getText().replace(",", "."));
+        deltaFin = Double.parseDouble(jLimTempoFin.getText().replace(",", "."));
+        e = Double.parseDouble(jOffset.getText().replace(",", "."));
+        eFin = Double.parseDouble(jOffsetFin.getText().replace(",", "."));
+        
+        
+        ConfigOrdens.setObservacoes("""
+                                    DELTA representa o limite de candles analisados
+                                    para a variação da cotação atual se distanciar de
+                                    algum extremo local. Caso não se distancie o bastante,
+                                    as referencias são reiniciadas.
+                                    """);
     }
-    
-    /**
-     * VERIFICA SE ESTRATEGIA ESTÁ EM USO (COL 0)
-     */
-    private void verificaConfigValores(){
-        verificaDados();
-        
+
+    @Override
+    protected void atualizaInterface() {
         jPassoPos.setEnabled(jRelatorioCompleto.isSelected());
         jPosMaxFin.setEnabled(jRelatorioCompleto.isSelected());
         jLabel16.setEnabled(jRelatorioCompleto.isSelected());
         
-        jPassoDelta.setEnabled(jRelatorioCompleto.isSelected());
-        jDeltaFin.setEnabled(jRelatorioCompleto.isSelected());
+        jPassoLimTempo.setEnabled(jRelatorioCompleto.isSelected());
+        jLimTempoFin.setEnabled(jRelatorioCompleto.isSelected());
         jLabel12.setEnabled(jRelatorioCompleto.isSelected());
         
         jPassoOffset.setEnabled(jRelatorioCompleto.isSelected());
         jOffsetFin.setEnabled(jRelatorioCompleto.isSelected());
         jLabel14.setEnabled(jRelatorioCompleto.isSelected());
+        
+        botaoExecutar.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular() && IG_TrStop.isPodeSimular());
+        
+        IG.setTemRelCompletoDiario(jRelatorioCompleto.isSelected());
+        IG_GerRisco.recebeTipoRelatorio(jRelatorioCompleto);
+        IG_TrStop.recebeTipoRelatorio(jRelatorioCompleto);
     }
-    
-    /**
-     * Prepara a planilha colocando os valores FALSE em todos checkbox.
-     * Rodar uma unica vez
-     */
-    
-    private void verificaDados(){
-        jButton1.setEnabled(!Candle.getListaCandleMinuto().isEmpty() && IG_GerRisco.isPodeSimular() && IG_TrStop.isPodeSimular());
-    }
-    
-    private void executaSimulacao(){
-        Sim_SuporteEResistenciaTrStop simulacao = new Sim_SuporteEResistenciaTrStop(false);
-        if(jRelatorioDetalhado.isSelected())
-            new Relatorios().detalhado(simulacao);
-        else
-            new Relatorios().completo(simulacao);
-    }
-    
-    private void configuraEstrategia() throws NumberFormatException {
-        boolean
-        temCompleto = jRelatorioCompleto.isSelected();
-        
-        double
-        passoDelta = Double.parseDouble(jPassoDelta.getText().replace(",", ".")),
-        passoOffset = Double.parseDouble(jPassoOffset.getText().replace(",", ".")),
-        passoLimOp = 1,
-        passoGain = 1,
-        passoLoss = 1;
-        
-        ConfigOrdens.configuraCompleto(temCompleto);
-        
-        //INICIA VARREDURA DA LISTA
-        boolean 
-        atualQtde = true,
-        temDelta = true,
-        temOffset = true,
-        temLimOp = false,
-        temAlvo = false,
-        temStop = false,
-        temContMov = jTemContMov.isSelected();
-        
-        int 
-        pos = Integer.parseInt(jPos.getText().replace(",", ".")),
-        posMax = Integer.parseInt(jPosMax.getText().replace(",", ".")),
-        posMaxFin = Integer.parseInt(jPosMaxFin.getText().replace(",", ".")),
-        passoPos = Integer.parseInt(jPassoPos.getText().replace(",", "."));
-        
-        double
-        delta = Double.parseDouble(jDelta.getText().replace(",", ".")),
-        deltaFin = Double.parseDouble(jDeltaFin.getText().replace(",", ".")),
-        e = Double.parseDouble(jOffset.getText().replace(",", ".")),
-        eFin = Double.parseDouble(jOffsetFin.getText().replace(",", ".")),
-        lim = 0, limFin = 0, 
-        g = 0, gFin = 0,
-        l =  0, lFin = 0;
 
-        LadoOrdem mov = LadoOrdem.INDEF;
-        
-        ConfigOrdens.setBooleans(temDelta, temLimOp, temOffset, temAlvo, temStop, temContMov, atualQtde);
-        ConfigOrdens.setBase(mov, pos, posMax, posMaxFin);
-        ConfigOrdens.setEstrategiaLoop(delta, deltaFin, lim, limFin, e, eFin, g, gFin, l, lFin);
-        ConfigOrdens.setPasso(passoPos, passoDelta, passoOffset, passoLimOp, passoGain, passoLoss);
-        String quebraLinha = System.lineSeparator();
-        ConfigOrdens.setObservacoes("DELTA representa o TEMPO LIMITE (em minutos)" + quebraLinha
-                                    + "para a variação da cotação atual superar" + quebraLinha
-                                    + "a distancia das linhas de Suporte e Resistencia." + quebraLinha
-                                    + "Caso não atinja tal valor, reinicia as referencias.");
+    @Override
+    public String getNome() {
+        return "Distancia Entre Extremos Com Tr.Stop";
     }
 }
