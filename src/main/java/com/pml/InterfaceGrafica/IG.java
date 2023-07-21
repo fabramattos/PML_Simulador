@@ -339,18 +339,20 @@ public class IG extends JFrame {
 
     private void jIndGenValor1verificaTecla_Neg(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jIndGenValor1verificaTecla_Neg
         char enter = evt.getKeyChar();
-        if(enter == ',' || enter == '-')
-        return;
-        if(!(Character.isDigit(enter)))
-        evt.consume();
+        if (enter == ',' || enter == '-') {
+            return;
+        }
+        if (!(Character.isDigit(enter)))
+            evt.consume();
     }//GEN-LAST:event_jIndGenValor1verificaTecla_Neg
 
     private void jIndGenValor2verificaTecla_Neg(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jIndGenValor2verificaTecla_Neg
         char enter = evt.getKeyChar();
-        if(enter == ',' || enter == '-')
-        return;
-        if(!(Character.isDigit(enter)))
-        evt.consume();
+        if (enter == ',' || enter == '-') {
+            return;
+        }
+        if (!(Character.isDigit(enter)))
+            evt.consume();
     }//GEN-LAST:event_jIndGenValor2verificaTecla_Neg
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -451,14 +453,14 @@ public class IG extends JFrame {
         initComponents();
         interfacesSimulacoes = new HashMap<>();
         configuraComboBox();
-        
+
         timer = new Timer(200, new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) {
-               atualizaInterface();
-           }
-       });
-       timer.start();
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                atualizaInterface();
+            }
+        });
+        timer.start();
     }
 
     /**
@@ -566,17 +568,17 @@ public class IG extends JFrame {
     }
 
     private void verificaIndicadores() {
-        if(jTemIndGen.isSelected()){
+        if (jTemIndGen.isSelected()) {
             jIndGenValor1.setEnabled(true);
             jIndGenOpe.setEnabled(true);
-            if(jIndGenOpe.getSelectedIndex()==3)
+            if (jIndGenOpe.getSelectedIndex() == 3) {
                 jIndGenValor2.setEnabled(true);
-            else{
+            } else {
                 jIndGenValor2.setEnabled(false);
                 jIndGenValor2.setText("0");
             }
 
-        }else{
+        } else {
             jIndGenOpe.setEnabled(false);
             jIndGenValor1.setEnabled(false);
             jIndGenValor1.setText("0");
@@ -595,7 +597,7 @@ public class IG extends JFrame {
             jMesIni.setEnabled(false);
             jAnoIni.setEnabled(false);
         }
-        
+
         if (jTemDataFin.isSelected()) {
             jDiaFin.setEnabled(true);
             jMesFin.setEnabled(true);
@@ -610,10 +612,10 @@ public class IG extends JFrame {
     private void verificaHorarios() {
         jHoraFin.setEnabled(jTemHorarioFin.isSelected());
         jMinFin.setEnabled(jTemHorarioFin.isSelected());
-        
+
         jHoraIni.setEnabled(jTemHorarioIni.isSelected());
         jMinIni.setEnabled(jTemHorarioIni.isSelected());
-        
+
         jHoraLimEntrada.setEnabled(jTemHorarioLimEntrada.isSelected());
         jMinLimEntrada.setEnabled(jTemHorarioLimEntrada.isSelected());
     }
@@ -692,7 +694,7 @@ public class IG extends JFrame {
         }
         setPodeSelecionarRelatorios(true);
     }
-    
+
     public static String printVersao() {
         return "ver: " + VERSAO;
     }
@@ -727,12 +729,11 @@ public class IG extends JFrame {
 
     public static void atualizaTempoEstimado(long tempoEstimado) {
         var duracao = Duration.ofNanos(tempoEstimado);
-        
+
         long dias = duracao.toDays();
         long horas = duracao.toHours() % 24;
         long minutos = duracao.toMinutes() % 60;
         long segundos = duracao.getSeconds() % 60;
-        
 
         jLabelTempoEstimado.setText(dias + " dias, " + horas + ":" + minutos + ":" + segundos);
     }
@@ -756,17 +757,17 @@ public class IG extends JFrame {
         // Obtendo todas as classes dentro do pacote e subpacotes que tenham relação com a interface IG_InterfaceSimulacao
         var classes = reflections
                 .getSubTypesOf(IG_InterfaceSimulacao.class);
-                
+
         // Iterando sobre as classes encontradas
         for (Class<?> clazz : classes) {
-            if(clazz.getName().contains("IG_InterfaceSimulacao")){
+            if (clazz.getName().contains("IG_InterfaceSimulacao")) {
                 continue;
             }
-          
+
             var interfaceDaSimulacao = (IG_InterfaceSimulacao) clazz.getDeclaredConstructor().newInstance();
             var nomeSimulacao = interfaceDaSimulacao.getNome();
-            
-            interfacesSimulacoes.put(nomeSimulacao , clazz.getName());
+
+            interfacesSimulacoes.put(nomeSimulacao, clazz.getName());
         }
     }
 
@@ -774,7 +775,7 @@ public class IG extends JFrame {
         comboBox_Simulacoes.removeAllItems();
         interfacesSimulacoes.keySet().forEach(key -> comboBox_Simulacoes.addItem(key));
     }
-    
+
     private void abreSimulacaoSelecionada() {
         String nomeSimulacao = comboBox_Simulacoes.getSelectedItem().toString();
         String nomeDaClasse = interfacesSimulacoes.get(nomeSimulacao);
