@@ -1,4 +1,4 @@
-# Simulador_v5.0.1: 
+# Simulador_v5.3.0: 
 ## Stock Market Back-Testing Tool
 
 Project made with:
