@@ -3,7 +3,7 @@
 
 Project made with:
  - NetBeans IDE 12.4
- - Java SDK 16
+ - Java SDK 20
  - Java Swing (for user interface)
  - Apache POI Lib (for excel files)
  
@@ -22,4 +22,8 @@ Project made with:
  ### every other row:
  - Candle data.
 
-**About how to use each simulation, risk management and further details: READ THE MANUAL!**
+## How to run the application
+```sh
+mvn clean package -DskipTests
+java -jar target/Simulador-5.3.0.jar
+```
