@@ -1,5 +1,18 @@
-# Simulador_v5.3.0: 
-## Stock Market Back-Testing Tool
+# Stock Market Back-Testing Tool V5.3.0
+Custom back-testing tool to run simulations as if trading in the stock market.
+Each simulation/strategy can be customized acording to the MANUAL, provided along with the compiled version:
+Entry points, gain, loss, risk management, max position, indicators, etc.
+
+| :placard: Vitrine.Dev | [Minha Vitrine](https://cursos.alura.com.br/vitrinedev/fabramattos) |
+| -------------  | --- |
+| :sparkles: Nome        | **Stock Market Back-Testing Tool**
+| :label: Tecnologias | Java, Java Swing, Netbeans, Apache POI
+| :rocket: URL         | [Latest Version](https://github.com/fabramattos/PML-Simulador/releases)
+
+<!-- Inserir imagem com a #vitrinedev ao final do link -->
+![interface](https://github.com/fabramattos/PML-Simulador/assets/45768087/ca53dda4-c2f0-4d66-abd1-57cb132464ba#vitrinedev)
+
+## Details
 
 Project made with:
  - NetBeans IDE 12.4
@@ -7,19 +20,18 @@ Project made with:
  - Java Swing (for user interface)
  - Apache POI Lib (for excel files)
  
- ## Importing Data Into the Simulator:
- The Excel file containing the candle information should have the following format:
-### Collums:
-6 collums in the following order:
- - Date
- - opening
- - maximum
- - minimun
- - closing
- - indicator
-### 1st row
- - Titles only. The last collum title, relating to the 'indicator' will be imported into the code
- ### every other row:
- - Candle data.
+ ## Configuration
+ ### Importing Data Into the Simulator:
+ The Excel file containing the candle data series information MUST have **6 collums** in the following order:
 
-**About how to use each simulation, risk management and further details: READ THE MANUAL!**
+ - **1st row, titles:**  
+ - | Date | opening | maximum | minimun | closing | indicator
+   - The last collum's title (here named as "indicator") will have it's name imported into the code
+- **Following rows:**
+  - data only
+
+ *Following the .jar file, you will find two excel files ready to be imported into the simulator.*
+
+ 
+### About each strategy and interface options:
+- **For detailed info about each strategy, risk management, simulator interface and further details: READ THE PROVIDED MANUAL!**
