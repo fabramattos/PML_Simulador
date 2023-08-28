@@ -2,6 +2,8 @@
 Custom back-testing tool to run simulations as if trading in the stock market.
 Each simulation/strategy can be customized acording to the MANUAL, provided along with the compiled version:
 Entry points, gain, loss, risk management, max position, indicators, etc.
+Data input -> Excel File
+Results Output -> New Excel File
 
 | :placard: Vitrine.Dev | [Minha Vitrine](https://cursos.alura.com.br/vitrinedev/fabramattos) |
 | -------------  | --- |
@@ -25,7 +27,7 @@ Project made with:
  The Excel file containing the candle data series information MUST have **6 collums** in the following order:
 
  - **1st row, titles:**  
- - | Date | opening | maximum | minimun | closing | indicator
+   - | Date | opening | maximum | minimun | closing | indicator
    - The last collum's title (here named as "indicator") will have it's name imported into the code
 - **Following rows:**
   - data only
