@@ -2,9 +2,8 @@
 Custom back-testing tool to run simulations as if trading in the stock market.
 Each simulation/strategy can be customized acording to the MANUAL, provided along with the compiled version:
 Entry points, gain, loss, risk management, max position, indicators, etc.
-Data input -> Excel File
-
-Results Output -> New Excel File
+ - Data input -> Import from Excel File
+ - Results Output -> Save to a new Excel File
 
 | :placard: Vitrine.Dev | [Minha Vitrine](https://cursos.alura.com.br/vitrinedev/fabramattos) |
 | -------------  | --- |
