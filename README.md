@@ -1,4 +1,6 @@
+*Mude o idioma:* [![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/fabramattos/PML_Simulador/blob/master/README_pt-BR.md)<br>
 # Stock Market Back-Testing Tool V5.3.0
+
 Custom back-testing tool to run simulations as if trading in the stock market.
 Each simulation/strategy can be customized acording to the MANUAL, provided along with the compiled version:
 Entry points, gain, loss, risk management, max position, indicators, etc.
