@@ -1,41 +1,33 @@
 *Mude o idioma:* [![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/fabramattos/PML_Simulador/blob/master/README_pt-BR.md)<br>
-# Stock Market Back-Testing Tool V5.3.0
+# Back-Testing for Financial Market
 
-Custom back-testing tool to run simulations as if trading in the stock market.
-Each simulation/strategy can be customized acording to the MANUAL, provided along with the compiled version:
-Entry points, gain, loss, risk management, max position, indicators, etc.
- - Data input -> Import from Excel File
- - Results Output -> Save to a new Excel File
+A customized tool to test and simulate investment and trading strategies for the financial market.
+Each simulation/strategy can be customized as specified in the MANUAL provided with the compiled version:
+- Entry points, gain, loss, risk management, maximum exposure, indicators, etc.
 
-| :placard: Vitrine.Dev | [Minha Vitrine](https://cursos.alura.com.br/vitrinedev/fabramattos) |
-| -------------  | --- |
-| :sparkles: Nome        | **Stock Market Back-Testing Tool**
-| :label: Tecnologias | Java, Java Swing, Netbeans, Apache POI
-| :rocket: URL         | [Latest Version](https://github.com/fabramattos/PML-Simulador/releases)
-
-<!-- Inserir imagem com a #vitrinedev ao final do link -->
 ![interface](https://github.com/fabramattos/PML-Simulador/assets/45768087/ca53dda4-c2f0-4d66-abd1-57cb132464ba#vitrinedev)
 
-## Details
+## Stack:
+- NetBeans IDE 12.4
+- Java SDK 16
+- Java Swing (for user interface)
+- Apache POI Lib (for handling .xlsx files)
 
-Project made with:
- - NetBeans IDE 12.4
- - Java SDK 16
- - Java Swing (for user interface)
- - Apache POI Lib (for excel files)
- 
- ## Configuration
- ### Importing Data Into the Simulator:
- The Excel file containing the candle data series information MUST have **6 collums** in the following order:
+## How to use the program:
+- Input Data -> Import .xlsx (Excel file)
+- Results -> Software generates a new .xlsx
 
- - **1st row, titles:**  
-   - | Date | opening | maximum | minimun | closing | indicator
-   - The last collum's title (here named as "indicator") will have it's name imported into the code
-- **Following rows:**
-  - data only
+### How to import data into the simulator:
+The Excel file containing the series of market candle data MUST follow the format:
+- 6 columns, in the following order:
+  - 1st line, HEADER:
+    - | Date | open | high | low | close | indicator name
+  - Remaining lines:
+    - data only
+  
+*Along with the .jar file, you will find two .xlsx (Excel) files with financial market data ready to be imported into the simulator.* <br>
+*Use the .xlsx files as a template to adapt/use your own data.*
 
- *Following the .jar file, you will find two excel files ready to be imported into the simulator.*
-
- 
-### About each strategy and interface options:
-- **For detailed info about each strategy, risk management, simulator interface and further details: READ THE PROVIDED MANUAL!**
+### About each strategy and its interfaces:
+- For details on each strategy, risk management, general interface, and more details: READ THE PROVIDED MANUAL.
+- With the basic buy/sell strategy according to indicators, simply perform the calculations and provide the results in the indicator column, and the tool will likely meet your needs.
