@@ -25,7 +25,7 @@ O arquivo Excel que contem a série de dados dos candles do mercado DEVE seguir 
   - Demais linhas:
     - apenas dados
 
- *Juntamento com o arquivo .jar, você encontrará dois arquivos .xlsx (Excel) com dados do mercado financeiro prontos para serem importados no simulador.*<br>
+ *Juntamente com o arquivo .jar, você encontrará dois arquivos .xlsx (Excel) com dados do mercado financeiro prontos para serem importados no simulador.*<br>
  *Use os .xlsx como modelo para adaptar/utilizar seus proprios dados*
 
 ### Sobre cada estratégia e suas interfaces:
